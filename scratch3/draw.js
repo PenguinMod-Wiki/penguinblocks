@@ -135,7 +135,10 @@ export default class SVG {
       a 4 4 0 0 1 4 4`
   }
 
-  static getTop(w) {
+  static getTop(w, shape) {
+    if (shape === "reporter" || shape === "boolean") {
+      return `M 0 4 A 4 4 0 0 1 4 0 L ${w - 4} 0 A 4 4 0 0 1 ${w} 4`
+    }
     return `M 0 4
       A 4 4 0 0 1 4 0
       H 12 ${SVG.topNotch(w, 0)}`
@@ -152,9 +155,13 @@ export default class SVG {
       L ${w} 3`
   }
 
-  static getRightAndBottom(w, y, hasNotch, inset) {
+  static getRightAndBottom(w, y, hasNotch, inset, shape) {
     if (typeof inset === "undefined") {
       inset = 0
+    }
+
+    if ((shape === "reporter" || shape === "boolean") && inset === 0) {
+      hasNotch = false;
     }
 
     let arr = [`L ${w} ${y - 4}`, `a 4 4 0 0 1 -4 4`]
@@ -181,13 +188,13 @@ export default class SVG {
     return arr.join(" ")
   }
 
-  static getArm(w, armTop) {
+  static getArm(w, armTop, shape) {
     return `L 16 ${armTop - 4}
       a 4 4 0 0 0 4 4
       L 28 ${armTop} ${SVG.topNotch(w, armTop)}`
   }
 
-  static getArmNoNotch(w, armTop) {
+  static getArmNoNotch(w, armTop, shape) {
     return `L 16 ${armTop - 4}
       a 4 4 0 0 0 4 4
       L 28 ${armTop} L ${w - 4} ${armTop}
@@ -290,9 +297,9 @@ export default class SVG {
     })
   }
 
-  static mouthRect(w, h, isFinal, lines, props) {
+  static mouthRect(w, h, isFinal, lines, props, shape) {
     let y = lines[0].height
-    const p = [SVG.getTop(w), SVG.getRightAndBottom(w, y, true, 16)]
+    const p = [SVG.getTop(w, shape), SVG.getRightAndBottom(w, y, true, 16, shape)]
     for (let i = 1; i < lines.length; i += 2) {
       const isLast = i + 2 === lines.length
 
@@ -300,15 +307,15 @@ export default class SVG {
       y += line.height - 3
 
       if (line.isFinal) {
-        p.push(SVG.getArmNoNotch(w, y))
+        p.push(SVG.getArmNoNotch(w, y, shape))
       } else {
-        p.push(SVG.getArm(w, y))
+        p.push(SVG.getArm(w, y, shape))
       }
 
       const hasNotch = !(isLast && isFinal)
       const inset = isLast ? 0 : 16
       y += lines[i + 1].height + 3
-      p.push(SVG.getRightAndBottom(w, y, hasNotch, inset))
+      p.push(SVG.getRightAndBottom(w, y, hasNotch, inset, shape))
     }
     p.push("Z")
     return SVG.path({ ...props, path: p })

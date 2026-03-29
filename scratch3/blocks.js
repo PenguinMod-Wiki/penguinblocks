@@ -392,7 +392,7 @@ class BlockView {
     if (lines.length > 1) {
       return SVG.mouthRect(w, h, this.isFinal, lines, {
         class: `sb3-${this.info.category}`,
-      })
+      }, this.info.shape)
     }
 
     // outlines
@@ -440,13 +440,13 @@ class BlockView {
     }
     if (this.isRound) {
       if (child.isIcon) {
-        return 16
+        return this.hasScript ? 12 : 16
       } else if (child.isLabel) {
-        return 12 // text in circle: 3 units
+        return this.hasScript ? 8 : 12 // text in circle: 3 units
       } else if (child.isDropdown) {
-        return 12 // square in circle: 3 units
+        return this.hasScript ? 8 : 12 // square in circle: 3 units
       } else if (child.isBoolean) {
-        return 12 // hexagon in circle: 3 units
+        return this.hasScript ? 8 : 12 // hexagon in circle: 3 units
       } else if (child.isRound) {
         return 4 // circle in circle: 1 unit
       }
@@ -542,7 +542,7 @@ class BlockView {
       const child = children[i]
       child.el = child.draw(iconStyle, this)
 
-      if (child.isScript && this.isCommand) {
+      if (child.isScript && (this.isCommand || this.isReporter || this.isBoolean)) {
         this.hasScript = true
         pushLine()
         child.y = y - 1
@@ -617,7 +617,7 @@ class BlockView {
     )
 
     // Center the label text inside small reporters.
-    if (this.isReporter) {
+    if (this.isReporter && !this.hasScript) {
       padLeft += (innerWidth - originalInnerWidth) / 2
     }
 
