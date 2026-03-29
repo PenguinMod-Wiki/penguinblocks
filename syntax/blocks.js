@@ -480,9 +480,48 @@ export function applyOverrides(info, overrides) {
     } else if (name === "reset") {
       info.categoryIsDefault = false
       info.isReset = true
+    } else {
+      const mOpcode = name.match(/^@opcode\(([^)]*)\)$/)
+      if (mOpcode) {
+        const id = mOpcode[1]
+        info.id = id
+        info.categoryIsDefault = false
+        const type = blocksById[id]
+        if (type) {
+          Object.assign(info, {
+            category: type.category,
+            shape: type.shape,
+            selector: type.selector,
+            hasLoopArrow: type.hasLoopArrow,
+          })
+        } else {
+          info.category = "extension"
+          const dotIndex = id.indexOf(".")
+          const underscoreIndex = id.indexOf("_")
+          let prefix = null
+          if (dotIndex !== -1) {
+            prefix = id.slice(0, dotIndex)
+          } else if (underscoreIndex !== -1) {
+            prefix = id.slice(0, underscoreIndex)
+          }
+          if (prefix) {
+            if (extensions[prefix]) {
+              info.category = extensions[prefix]
+            } else if (aliasExtensions[prefix]) {
+              info.category = aliasExtensions[prefix]
+            }
+          }
+        }
+      }
+      const mId = name.match(/^@id\(([^)]*)\)$/)
+      if (mId) {
+        info.name = mId[1]
+      }
     }
   }
 }
+
+
 
 export function blockName(block) {
   const words = []

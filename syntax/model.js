@@ -100,7 +100,9 @@ export class Input {
       ? new Label(value, `literal-${this.shape}`)
       : null
     this.x = 0
+    this.name = null
   }
+
   get isInput() {
     return true
   }
@@ -117,7 +119,7 @@ export class Input {
     if (this.hasArrow) {
       text += " v"
     }
-    return this.isRound
+    let output = this.isRound
       ? `(${text})`
       : this.isSquare
         ? `[${text}]`
@@ -126,6 +128,10 @@ export class Input {
           : this.isStack
             ? "{}"
             : text
+    if (this.name) {
+      output = `@argumentname(${this.name})${output}`
+    }
+    return output
   }
 
   translate(_lang) {
@@ -144,6 +150,9 @@ export class Block {
     this.children = children
     this.comment = comment || null
     this.diff = null
+    this.opcode = info.id || null
+    this.name = info.name || null
+
 
     const shape = this.info.shape
     this.isHat = shape === "hat" || shape === "cat" || shape === "define-hat"
@@ -221,6 +230,18 @@ export class Block {
         overrides += " "
       }
       overrides += this.info.shape
+    }
+    if (this.opcode && this.opcode !== this.info.id) {
+      if (overrides) {
+        overrides += " "
+      }
+      overrides += `@opcode(${this.opcode})`
+    }
+    if (this.name) {
+      if (overrides) {
+        overrides += " "
+      }
+      overrides += `@id(${this.name})`
     }
     if (overrides) {
       text += ` :: ${overrides}`
@@ -377,6 +398,8 @@ export class Script {
   constructor(blocks) {
     this.blocks = blocks
     this.isEmpty = !blocks.length
+    this.name = null
+
     this.isFinal = !this.isEmpty && blocks[blocks.length - 1].isFinal
   }
   get isScript() {

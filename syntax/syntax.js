@@ -36,6 +36,16 @@ function paintBlock(info, children, languages) {
     overrides = children.pop()
   }
 
+  let opcodeOverride = null
+  for (const o of overrides) {
+    if (typeof o === "string") {
+      const m = o.match(/^@opcode\(([^)]*)\)$/)
+      if (m) {
+        opcodeOverride = m[1]
+      }
+    }
+  }
+
   // build hash
   const words = []
   for (const child of children) {
@@ -50,12 +60,21 @@ function paintBlock(info, children, languages) {
   const string = words.join(" ")
   const shortHash = (info.hash = minifyHash(string))
 
-  // paint
   let lang
   let type
   if (!overrides.includes("reset")) {
-    let o = lookupHash(shortHash, info, children, languages)
+    let o = null
+    if (opcodeOverride && blocksById[opcodeOverride]) {
+      o = {
+        type: blocksById[opcodeOverride],
+        lang: languages[0],
+      }
+    }
     if (!o) {
+      o = lookupHash(shortHash, info, children, languages)
+    }
+
+    if (!o && !opcodeOverride) {
       // Fallback: try matching without icons.
       const cleaningWords = []
       for (const child of children) {
@@ -265,7 +284,14 @@ function parseLines(code, languages, options) {
   function pParts(end) {
     const children = []
     let label
+    let pendingName = null
+    let pendingOpcode = null
+    let pendingId = null
+    let pendingCategory = null
+    let pendingColor = null
+    let pendingShape = null
     while (tok && tok !== "\n") {
+
       // So that comparison operators `<()<()>` and `<()>()>` don't need the
       // central <> escaped, we interpret it as a label if particular
       // conditions are met.
@@ -292,22 +318,47 @@ function parseLines(code, languages, options) {
       }
 
       switch (tok) {
-        case "[":
+        case "[": {
           label = null
-          children.push(pString())
+          const input = pString()
+          if (pendingName) {
+            input.name = pendingName
+            pendingName = null
+          }
+          children.push(input)
           break
-        case "(":
+        }
+        case "(": {
           label = null
-          children.push(pReporter())
+          const input = pReporter()
+          if (pendingName) {
+            input.name = pendingName
+            pendingName = null
+          }
+          children.push(input)
           break
-        case "<":
+        }
+        case "<": {
           label = null
-          children.push(pPredicate())
+          const input = pPredicate()
+          if (pendingName) {
+            input.name = pendingName
+            pendingName = null
+          }
+          children.push(input)
           break
-        case "{":
+        }
+        case "{": {
           label = null
-          children.push(pEmbedded())
+          const input = pEmbedded()
+          if (pendingName) {
+            input.name = pendingName
+            pendingName = null
+          }
+          children.push(input)
           break
+        }
+
         case " ":
         case "\t":
           next() // Skip over whitespace.
@@ -337,6 +388,42 @@ function parseLines(code, languages, options) {
             }
           }
 
+          if (
+            tok === "(" &&
+            (name === "opcode" ||
+              name === "argumentname" ||
+              name === "category" ||
+              name === "color" ||
+              name === "shape" ||
+              name === "id")
+          ) {
+            const type = name
+            next() // (
+            let value = ""
+            while (tok && tok !== ")") {
+              value += tok
+              next()
+            }
+            if (tok === ")") {
+              next()
+            }
+            if (type === "opcode") {
+              pendingOpcode = value
+            } else if (type === "argumentname") {
+              pendingName = value
+            } else if (type === "id") {
+              pendingId = value
+            } else if (type === "category") {
+              pendingCategory = value
+            } else if (type === "color") {
+              pendingColor = value
+            } else if (type === "shape") {
+              pendingShape = value
+            }
+            label = null
+            break
+          }
+
           if (name === "cloud") {
             children.push(new Label("☁"))
           } else {
@@ -352,14 +439,37 @@ function parseLines(code, languages, options) {
           label = null
           break
         }
+
         case "\\":
           next() // escape character
         // fallthrough
         case ":":
           if (tok === ":" && peek() === ":") {
-            children.push(pOverrides(end))
+            const overrides = pOverrides(end)
+            if (pendingOpcode) {
+              overrides.push(`@opcode(${pendingOpcode})`)
+              pendingOpcode = null
+            }
+            if (pendingId) {
+              overrides.push(`@id(${pendingId})`)
+              pendingId = null
+            }
+            if (pendingCategory) {
+              overrides.push(pendingCategory)
+              pendingCategory = null
+            }
+            if (pendingColor) {
+              overrides.push(pendingColor)
+              pendingColor = null
+            }
+            if (pendingShape) {
+              overrides.push(pendingShape)
+              pendingShape = null
+            }
+            children.push(overrides)
             return children
           }
+
         // fallthrough
         default:
           if (!label) {
@@ -369,8 +479,35 @@ function parseLines(code, languages, options) {
           next()
       }
     }
+
+    const finalOverrides = []
+    if (pendingOpcode) {
+      finalOverrides.push(`@opcode(${pendingOpcode})`)
+      pendingOpcode = null
+    }
+    if (pendingId) {
+      finalOverrides.push(`@id(${pendingId})`)
+      pendingId = null
+    }
+    if (pendingCategory) {
+      finalOverrides.push(pendingCategory)
+      pendingCategory = null
+    }
+    if (pendingColor) {
+      finalOverrides.push(pendingColor)
+      pendingColor = null
+    }
+    if (pendingShape) {
+      finalOverrides.push(pendingShape)
+      pendingShape = null
+    }
+    if (finalOverrides.length) {
+      children.push(finalOverrides)
+    }
+
     return children
   }
+
 
   function pString() {
     next() // '['
@@ -578,16 +715,7 @@ function parseLines(code, languages, options) {
       commentText += tok
       next()
     }
-    const comment = new Comment(commentText, true)
-    const m = commentText.match(/^\s*@opcode:"([^"]*)"/)
-    if (m) {
-      comment.opcode = m[1]
-      comment.skipDisplay = true
-    }
-    if (tok && tok === "\n") {
-      next()
-    }
-    return comment
+    return new Comment(commentText, true)
   }
 
 
@@ -605,20 +733,6 @@ function parseLines(code, languages, options) {
         return comment
       }
       block.comment = comment
-
-      if (comment.opcode && block.info.category === "obsolete") {
-        const type = blocksById[comment.opcode]
-        if (type) {
-          Object.assign(block.info, {
-            id: type.id,
-            category: type.category,
-            shape: type.shape,
-            selector: type.selector,
-            hasLoopArrow: type.hasLoopArrow,
-            categoryIsDefault: true,
-          })
-        }
-      }
     }
 
     if (block) {
