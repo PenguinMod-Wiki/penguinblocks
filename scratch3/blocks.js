@@ -96,6 +96,7 @@ export class IconView {
           height: 40,
           isURIIcon: true,
           naturalWidth: 24,
+          naturalHeight: 24,
         })
         return
       }
@@ -115,9 +116,10 @@ export class IconView {
   }
 
   draw(iconStyle) {
-    const x = (this.width - this.naturalWidth) / 2
-    const y = (this.height - this.naturalHeight) / 2
+    let x = (this.width - this.naturalWidth) / 2
+    let y = (this.height - this.naturalHeight) / 2
     if (isURI(this.name)) {
+      y = y + 2;
       return SVG.el("image", {
         href: this.name,
         width: this.naturalWidth,
