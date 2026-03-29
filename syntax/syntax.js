@@ -29,7 +29,6 @@ import {
   blocksById,
 } from "./blocks.js"
 
-
 function paintBlock(info, children, languages) {
   let overrides = []
   if (Array.isArray(children[children.length - 1])) {
@@ -589,7 +588,6 @@ function parseLines(code, languages, options) {
     }
     return comment
   }
-
 
   function pLine() {
     let diff
