@@ -521,8 +521,6 @@ export function applyOverrides(info, overrides) {
   }
 }
 
-
-
 export function blockName(block) {
   const words = []
   for (const child of block.children) {

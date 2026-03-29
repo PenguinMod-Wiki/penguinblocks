@@ -153,7 +153,6 @@ export class Block {
     this.opcode = info.id || null
     this.name = info.name || null
 
-
     const shape = this.info.shape
     this.isHat = shape === "hat" || shape === "cat" || shape === "define-hat"
     this.hasPuzzle =

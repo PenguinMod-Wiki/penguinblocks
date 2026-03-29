@@ -290,7 +290,6 @@ function parseLines(code, languages, options) {
     let pendingColor = null
     let pendingShape = null
     while (tok && tok !== "\n") {
-
       // So that comparison operators `<()<()>` and `<()>()>` don't need the
       // central <> escaped, we interpret it as a label if particular
       // conditions are met.
@@ -506,7 +505,6 @@ function parseLines(code, languages, options) {
 
     return children
   }
-
 
   function pString() {
     next() // '['
