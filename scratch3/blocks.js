@@ -22,6 +22,13 @@ const {
   iconName,
 } = style
 
+const isURI = name =>
+  name &&
+  (name.startsWith("data:") ||
+    name.includes("://") ||
+    name.startsWith("/") ||
+    name.startsWith("./"))
+
 export class LabelView {
   constructor(label) {
     Object.assign(this, label)
@@ -77,18 +84,18 @@ LabelView.metricsCache = {}
 LabelView.toMeasure = []
 
 export class IconView {
-  constructor(icon, options, isExtension) {
+  constructor(icon, options) {
     Object.assign(this, icon)
 
     const info =
       IconView.icons[this.name] || (options.icons && options.icons[this.name])
     if (!info) {
-      if (this.name.startsWith("data:")) {
+      if (isURI(this.name)) {
         Object.assign(this, {
-          width: isExtension ? 40 : 24,
-          height: isExtension ? 40 : 24,
-          isDataIcon: true,
-          isExtensionIcon: !!isExtension,
+          width: 40,
+          height: 40,
+          isURIIcon: true,
+          naturalWidth: 24,
         })
         return
       }
@@ -99,6 +106,8 @@ export class IconView {
     } else {
       Object.assign(this, info)
     }
+    this.naturalWidth = this.width
+    this.naturalHeight = this.height
   }
 
   get isIcon() {
@@ -106,19 +115,22 @@ export class IconView {
   }
 
   draw(iconStyle) {
-    if (this.name.startsWith("data:")) {
-      let isExt = this.isExtensionIcon
+    const x = (this.width - this.naturalWidth) / 2
+    const y = (this.height - this.naturalHeight) / 2
+    if (isURI(this.name)) {
       return SVG.el("image", {
         href: this.name,
-        width: isExt ? 24 : this.width,
-        height: isExt ? 24 : this.height,
-        x: isExt ? 12 : 0,
-        y: isExt ? 12 : 0,
+        width: this.naturalWidth,
+        height: this.naturalHeight,
+        x: x,
+        y: y,
       })
     }
     return SVG.symbol(`#sb3-${iconName(this.name, iconStyle)}`, {
-      width: this.width,
-      height: this.height,
+      width: this.naturalWidth,
+      height: this.naturalHeight,
+      x: x,
+      y: y,
     })
   }
 
@@ -135,7 +147,7 @@ export class IconView {
       musicBlock: { width: 40, height: 40 },
       penBlock: { width: 40, height: 40 },
       videoBlock: { width: 40, height: 40, dy: 10 },
-      facesensingBlock: { width: 40, height: 40, dy: 3.9932885906 }, // 40 - 21.46 * (40 / 23.84), expcept this is still slightly off?
+      facesensingBlock: { width: 40, height: 40, dy: 3.9932885906 },
       ttsBlock: { width: 40, height: 40 },
       translateBlock: { width: 40, height: 40 },
       wedoBlock: { width: 40, height: 40 },
@@ -159,21 +171,18 @@ export class LineView {
     return true
   }
 
-  measure() {}
+  measure() { }
 
   draw(_iconStyle, parent) {
-    const category = parent.info.category
     const props = {
-      class: `sb3-extension-line sb3-${category}-dark`,
-      stroke: "rgba(0, 0, 0, 0.15)", // Fallback if CSS doesn't set stroke
+      class: "sb3-extension-line",
+      stroke: "rgba(255, 255, 255, 0.35)",
+      "stroke-width": 1,
       "stroke-linecap": "round",
       x1: 0,
-      y1: 4,
+      y1: 8,
       x2: 0,
-      y2: 36,
-    }
-    if (parent.info.color) {
-      props.stroke = "rgba(0, 0, 0, 0.2)"
+      y2: 32,
     }
     return SVG.el("line", props)
   }
@@ -245,9 +254,8 @@ export class InputView {
 
     const el = InputView.shapes[this.shape](w, h)
     SVG.setProps(el, {
-      class: `${
-        this.isColor ? "" : `sb3-${parent.info.category}`
-      } sb3-input sb3-input-${this.shape}`,
+      class: `${this.isColor ? "" : `sb3-${parent.info.category}`
+        } sb3-input sb3-input-${this.shape}`,
     })
 
     if (this.isColor) {
@@ -313,38 +321,40 @@ class BlockView {
     this.comment = this.comment ? newView(this.comment, options) : null
     this.isRound = this.isReporter
 
-    // Avoid accidental mutation
     this.info = { ...block.info }
 
-    this.children = block.children.map((node, i) => {
-      // If it's the first icon in a stack/hat block, it's an extension icon
-      const isExt =
-        i === 0 &&
-        node instanceof Icon &&
-        (this.info.shape === "stack" || this.info.shape === "hat")
-      return newView(node, { ...options, isExtensionIcon: isExt })
-    })
+    this.children = block.children.map(node => newView(node, options))
 
-    if (
-      this.children[0] &&
-      this.children[0].isIcon &&
-      !this.children[1]?.isLine &&
-      (this.info.shape === "stack" || this.info.shape === "hat")
-    ) {
-      this.children.splice(1, 0, new LineView())
-    }
+    const isCommand = this.info.shape === "stack" || this.info.shape === "hat"
+
+    const firstChild = block.children[0]
+    const firstIsURIIcon =
+      isCommand &&
+      firstChild instanceof Icon &&
+      isURI(firstChild.name)
 
     if (
       Object.prototype.hasOwnProperty.call(aliasExtensions, this.info.category)
     ) {
       this.info.category = aliasExtensions[this.info.category]
     }
-    if (Object.prototype.hasOwnProperty.call(extensions, this.info.category)) {
+
+    const willGetVanillaIcon = Object.prototype.hasOwnProperty.call(
+      extensions,
+      this.info.category,
+    )
+
+    if (willGetVanillaIcon) {
+      const icon = new IconView({ name: this.info.category + "Block" }, options)
+      icon.width = 52
       this.children.unshift(new LineView())
-      this.children.unshift(
-        new IconView({ name: this.info.category + "Block" }, options),
-      )
+      this.children.unshift(icon)
       this.info.category = "extension"
+    } else if (firstIsURIIcon) {
+      const icon = this.children.shift()
+      icon.width = 52
+      this.children.unshift(new LineView())
+      this.children.unshift(icon)
     }
 
     this.x = 0
@@ -579,8 +589,7 @@ class BlockView {
           }
         }
 
-        // Align extension category icons below notch
-        if (child.isIcon && i === 0 && this.isCommand && !child.isDataIcon) {
+        if (child.isIcon && i === 0 && this.isCommand) {
           line.height = Math.max(line.height, child.height + 8)
         }
 
@@ -656,9 +665,6 @@ class BlockView {
           y += 3
         } else if (child.isIcon) {
           y += child.dy | 0
-          if (this.isCommand && i === 0 && j === 0 && !child.isDataIcon) {
-            y += 4
-          }
         }
 
         let x = padLeft + child.x
@@ -1003,9 +1009,5 @@ const viewFor = node => {
 }
 
 export const newView = (node, options) => {
-  const View = viewFor(node)
-  if (View === IconView) {
-    return new View(node, options, options?.isExtensionIcon)
-  }
-  return new View(node, options)
+  return new (viewFor(node))(node, options)
 }
