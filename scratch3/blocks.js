@@ -159,7 +159,7 @@ export class LineView {
     return true
   }
 
-  measure() {}
+  measure() { }
 
   draw(_iconStyle, parent) {
     const category = parent.info.category
@@ -245,9 +245,8 @@ export class InputView {
 
     const el = InputView.shapes[this.shape](w, h)
     SVG.setProps(el, {
-      class: `${
-        this.isColor ? "" : `sb3-${parent.info.category}`
-      } sb3-input sb3-input-${this.shape}`,
+      class: `${this.isColor ? "" : `sb3-${parent.info.category}`
+        } sb3-input sb3-input-${this.shape}`,
     })
 
     if (this.isColor) {
@@ -898,16 +897,6 @@ class DocumentView {
         height: 24,
       }
       if (icon.trim().startsWith("<svg") || icon.trim().startsWith("<g")) {
-        // SVG code
-        // We can't easily parse SVG here without a DOM or complex regex.
-        // Assuming SVG.el can handle raw SVG if we wrap it?
-        // Actually, SVG.el is for creating single elements.
-        // Let's use a better approach: create a symbol and use innerHTML if available
-        // but this is a browser/server library.
-        // scratchblocks usually uses SVG.el and SVG.setProps.
-        // For raw SVG, we might need a different tag or just trust it.
-        //
-        // Wait, the specification says SVG code or image link.
         iconElements.push(
           SVG.el("g", {
             ...props,
