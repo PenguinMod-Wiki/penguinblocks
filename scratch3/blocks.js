@@ -171,7 +171,7 @@ export class LineView {
     return true
   }
 
-  measure() { }
+  measure() {}
 
   draw(_iconStyle, parent) {
     const props = {
@@ -254,8 +254,9 @@ export class InputView {
 
     const el = InputView.shapes[this.shape](w, h)
     SVG.setProps(el, {
-      class: `${this.isColor ? "" : `sb3-${parent.info.category}`
-        } sb3-input sb3-input-${this.shape}`,
+      class: `${
+        this.isColor ? "" : `sb3-${parent.info.category}`
+      } sb3-input sb3-input-${this.shape}`,
     })
 
     if (this.isColor) {
@@ -329,9 +330,7 @@ class BlockView {
 
     const firstChild = block.children[0]
     const firstIsURIIcon =
-      isCommand &&
-      firstChild instanceof Icon &&
-      isURI(firstChild.name)
+      isCommand && firstChild instanceof Icon && isURI(firstChild.name)
 
     if (
       Object.prototype.hasOwnProperty.call(aliasExtensions, this.info.category)
