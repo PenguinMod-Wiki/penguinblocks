@@ -298,6 +298,9 @@ export class InputView {
     }
 
     const result = SVG.group([el])
+    if (this.name) {
+      SVG.setProps(result, { "data-argumentname": this.name })
+    }
     if (this.hasLabel) {
       result.appendChild(label)
     }
@@ -726,7 +729,11 @@ class BlockView {
       SVG.setProps(el, props)
     }
 
-    return SVG.group(objects)
+    const result = SVG.group(objects)
+    if (this.opcode) {
+      SVG.setProps(result, { "data-opcode": this.opcode })
+    }
+    return result
   }
 }
 

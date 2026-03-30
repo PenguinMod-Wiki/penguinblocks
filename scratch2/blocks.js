@@ -204,6 +204,9 @@ class InputView {
         class: `sb-input sb-input-${this.shape}`,
       }),
     ])
+    if (this.name) {
+      SVG.setProps(result, { "data-argumentname": this.name })
+    }
     if (this.hasLabel) {
       const x = this.isRound ? 5 : 4
       result.appendChild(SVG.move(x, 0, label))
@@ -555,7 +558,11 @@ class BlockView {
       })
     }
 
-    return SVG.group(objects)
+    const result = SVG.group(objects)
+    if (this.opcode) {
+      SVG.setProps(result, { "data-opcode": this.opcode })
+    }
+    return result
   }
 }
 
