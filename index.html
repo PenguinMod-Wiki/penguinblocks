@@ -342,7 +342,11 @@ setInterval(function() {
 }, 200);
 
 function updatedFromHash() {
+  var cursor = editor.getCursor();
+  var scrollInfo = editor.getScrollInfo();
   editor.setValue(obj.script);
+  editor.setCursor(cursor);
+  editor.scrollTo(scrollInfo.left, scrollInfo.top);
   objUpdated();
   chooseLang.value = obj.lang || "";
 }
