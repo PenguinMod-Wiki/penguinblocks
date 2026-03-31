@@ -9,6 +9,33 @@
 <link rel=stylesheet href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700">
 -->
 <link rel=stylesheet href="index.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<style>
+.CodeMirror {
+  height: 100%;
+}
+.cm-s-block { color: #4a6cd4; font-weight: bold; }
+.cm-s-comment { color: #999; font-style: italic; }
+.cm-s-string { color: #904949; }
+.cm-s-number { color: #4548af; }
+.cm-s-override { color: #888; }
+.cm-s-keyword { color: #5cb712; }
+
+.cm-s-motion { color: #4a6cd4; }
+.cm-s-looks { color: #8a55d7; }
+.cm-s-sound { color: #bb42c3; }
+.cm-s-pen { color: #0e9a6c; }
+.cm-s-events { color: #c88330; }
+.cm-s-control { color: #e1a91a; }
+.cm-s-sensing { color: #2ca5e2; }
+.cm-s-operators { color: #5cb712; }
+.cm-s-variables, .cm-s-variable { color: #ee7d16; }
+.cm-s-list { color: #cc5b22; }
+.cm-s-custom { color: #632d99; }
+.cm-s-extension { color: #4b4a60; }
+.cm-s-grey { color: #888; }
+.cm-s-obsolete { color: #d41919; }
+</style>
 
 <style>
 #preview > svg {
@@ -52,7 +79,7 @@ body {
   <span>
     <a target="_blank" href="https://wiki.scratch.mit.edu/wiki/Block_Plugin/Syntax">help</a>
     <a href="https://github.com/PenguinMod-Wiki/penguinblocks">github</a>
-    <a href="generator/"><b>generate</b></a>
+    <a href="new-syntax.html"><b>new syntax</b></a>
   </span>
 </h1>
 
@@ -63,6 +90,12 @@ body {
   </select>
 
   <small id=lang-status></small>
+
+  <select id="choose-style">
+    <option value="scratch3">3.0 (original)</option>
+    <option value="scratch3-high-contrast">3.0 (high-contrast)</option>
+    <option value="scratch2">2.0</option>
+  </select>
 </div>
 
 <textarea id="editor"></textarea>
@@ -74,18 +107,115 @@ body {
 
 <script src="build/penguinblocks.min.js"></script>
 <script src="build/translations-all.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
 
 <script>
-var editor = document.getElementById('editor');
-var exportDropdown;
+var keywordToCategory = {};
+var categoryNames = new Set([
+  "motion", "looks", "sound", "pen", "events", "control", "sensing", 
+  "operators", "variables", "list", "custom", "extension", "grey", "obsolete"
+]);
+
+function rebuildKeywordMap() {
+  keywordToCategory = {};
+  Object.keys(penguinblocks.allLanguages).forEach(langCode => {
+    var lang = penguinblocks.allLanguages[langCode];
+    if (!lang.blocksByHash) return;
+    for (var hash in lang.blocksByHash) {
+      var blocks = lang.blocksByHash[hash];
+      if (!blocks || blocks.length === 0) continue;
+      var category = blocks[0].category;
+      if (!category) continue;
+      categoryNames.add(category);
+      
+      var words = hash.split(/[ _%@()\[\]{}|]+/);
+      words.forEach(word => {
+        if (word.length > 1) {
+          var w = word.toLowerCase();
+          if (!keywordToCategory[w]) {
+            keywordToCategory[w] = category;
+          }
+        }
+      });
+    }
+    if (lang.definePrefix) {
+      lang.definePrefix.forEach(p => {
+        keywordToCategory[p.toLowerCase()] = "custom";
+      });
+    }
+  });
+}
+
+CodeMirror.defineMode("scratchblocks", function() {
+  rebuildKeywordMap();
+  return {
+    token: function(stream) {
+      if (stream.eatSpace()) return null;
+
+      if (stream.match("//")) {
+        stream.skipToEnd();
+        return "comment";
+      }
+
+      if (stream.match(/^::/)) {
+        return "keyword";
+      }
+
+      if (stream.match(/^\[[^\]]*\]/)) return "string";
+
+      if (stream.match(/^\([^\)]*\)/)) return "number";
+
+      if (stream.match(/^#(?:[0-9a-fA-F]{3}){1,2}/)) return "number";
+
+      if (stream.match(/^@[a-zA-Z0-9_-]+/)) return "variable-2";
+      if (stream.match(/^@\([^)]*\)/)) return "variable-2";
+
+      if (stream.match(/^{|}/)) return "bracket";
+
+      var m = stream.match(/^[a-zA-Z\u00C0-\u017F]+/);
+      if (m) {
+        var word = m[0].toLowerCase();
+
+        var line = stream.string.slice(stream.pos);
+        var overrideMatch = line.match(/::\s*([a-zA-Z0-9_-]+)/);
+        if (overrideMatch) {
+          var override = overrideMatch[1].toLowerCase();
+          if (categoryNames.has(override)) {
+            return "s-" + override;
+          }
+        }
+
+        if (categoryNames.has(word)) {
+          return "s-" + word;
+        }
+
+        if (keywordToCategory[word]) {
+          return "s-" + keywordToCategory[word];
+        }
+        return "variable";
+      }
+
+      stream.next();
+      return null;
+    }
+  };
+});
+
+var obj = { script: "", lang: "" };
+extractHash();
+
+var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+  mode: "scratchblocks",
+  lineNumbers: true,
+  lineWrapping: true,
+  theme: "default"
+});
+
 var exportSVGLink;
 var exportPNGLink;
 
-var obj = {};
-extractHash();
-
-editor.addEventListener('input', function(e) {
-  obj.script = editor.value;
+editor.on('change', function() {
+  obj.script = editor.getValue();
   objUpdated();
 });
 
@@ -117,6 +247,13 @@ document.getElementById('lang-status').appendChild(langStatus);
 chooseLang.addEventListener('change', function(e) {
   obj.lang = chooseLang.value;
   console.log(obj);
+  objUpdated();
+});
+
+var chooseStyle = document.getElementById('choose-style');
+chooseStyle.value = localStorage.getItem('penguinblocks-style') || 'scratch3';
+chooseStyle.addEventListener('change', function() {
+  localStorage.setItem('penguinblocks-style', chooseStyle.value);
   objUpdated();
 });
 
@@ -173,7 +310,6 @@ function download(filename, content) {
 }
 
 function objUpdated() {
-  // set hash
   if (obj.lang) {
     location.hash = ('#?lang=' + encodeURIComponent(obj.lang) +
                      '&script='+encodeURIComponent(obj.script));
@@ -184,115 +320,40 @@ function objUpdated() {
       location.hash = '#';
     }
   }
-  // TODO: don't spam history on every keypress!
-
-  /*
-  // renderMatching API example
-  preview.innerHTML = obj.script;
-  penguinblocks.renderMatching('pre.blocks', {
-    languages: ['en', obj.lang],
-    render: function(doc, cb) {
-      doc.render(function(svg) {
-        var el = document.createElement('div');
-        el.appendChild(svg);
-
-        var link = exportSVGLink = document.createElement('a');
-        exportLink.href = penguinblocks.exportSVG(svg);
-        exportLink.setAttribute('download', 'penguinblocks.svg');
-        exportLink.textContent = "Export SVG";
-        exportLink.className = 'export-link';
-        var p = document.createElement('p');
-        p.appendChild(exportLink);
-        el.appendChild(p);
-
-        cb(el);
-      });
-    },
-  });
-  */
 
   var doc = window.doc = penguinblocks.parse(obj.script, {
     languages: obj.lang ? ['en', obj.lang] : ['en'],
   });
 
-  // doc.translate(penguinblocks.allLanguages['de']);
-
-  // var doc = window.doc = penguinblocks.fromJSON({
-  //   scripts: eval(obj.script),
-  // });
-
-  console.log(penguinblocks.stringify(doc));
-  var docView3HighContrast = penguinblocks.newView(doc, {
-    style: "scratch3-high-contrast",
-    scale: 0.675
+  var selectedStyle = chooseStyle.value;
+  var docView = penguinblocks.newView(doc, {
+    style: selectedStyle,
+    scale: selectedStyle === "scratch2" ? 1 : 0.675
   });
-  var docView3 = penguinblocks.newView(doc, {
-    style: "scratch3",
-    scale: 0.675
-  });
-  var docView2 = penguinblocks.newView(doc, {
-    style: "scratch2",
-    scale: 1
-  });
-  var svg3HighContrast = docView3HighContrast.render();
-  var svg3 = docView3.render();
-  var svg2 = docView2.render();
+  
+  var svg = docView.render();
   preview.innerHTML = "";
-  preview.appendChild(svg3HighContrast);
-  preview.appendChild(svg3);
-  preview.appendChild(svg2);
-  svg3HighContrast.classList.add("scratch3");
-  svg3.classList.add("scratch3")
-  // Need to add manually if calling View#render (folks, this is why you shouldn't use private API!)
-  svg3HighContrast.classList.add("penguinblocks-style-scratch3-high-contrast")
-  svg3.classList.add("penguinblocks-style-scratch3")
-
-  const getSelectedView = () => {
-    switch (exportDropdown.value) {
-      case "3-high-contrast":
-        return docView3HighContrast;
-      case "2":
-        return docView2;
-      default:
-        return docView3;
-    }
+  preview.appendChild(svg);
+  
+  if (/^scratch3($|-)/.test(selectedStyle)) {
+     svg.classList.add("scratch3");
   }
+  svg.classList.add("penguinblocks-style-" + selectedStyle);
 
-  // add export link
   setTimeout(function() {
     if (!exportSVGLink) exportSVGLink = document.createElement('a');
-    exportSVGLink.onclick = () => download("penguinblocks.svg", getSelectedView().exportSVG());
+    exportSVGLink.onclick = () => download("penguinblocks.svg", docView.exportSVG());
     exportSVGLink.textContent = "Export SVG";
     exportSVGLink.className = 'export-link';
     if (!exportSVGLink.isConnected) document.body.appendChild(exportSVGLink);
 
     if (!exportPNGLink) exportPNGLink = document.createElement('a');
-    exportPNGLink.onclick = () => getSelectedView().exportPNG((url) => download("penguinblocks.png", url));
+    exportPNGLink.onclick = () => docView.exportPNG((url) => download("penguinblocks.png", url));
     exportPNGLink.textContent = "Export PNG";
     exportPNGLink.className = 'export-link';
     if (!exportPNGLink.isConnected) document.body.appendChild(exportPNGLink);
-
-    if (!exportDropdown) {
-      exportDropdown = document.createElement("select");
-      exportDropdown.appendChild(Object.assign(document.createElement("option"), {
-        label: "3.0 (original)",
-        value: "3",
-        selected: true,
-      }));
-      exportDropdown.appendChild(Object.assign(document.createElement("option"), {
-        label: "3.0 (high contrast)",
-        value: "3-high-contrast",
-      }));
-      exportDropdown.appendChild(Object.assign(document.createElement("option"), {
-        label: "2.0",
-        value: "2",
-      }));
-      exportDropdown.className = 'export-link';
-    }
-    if (!exportDropdown.isConnected) document.body.appendChild(exportDropdown);
   }, 0);
 
-  // update language dropdown
   var lang = penguinblocks.allLanguages[obj.lang]
   langStatus.textContent = lang ? `${lang.percentTranslated}%` : "";
 }
@@ -304,7 +365,7 @@ setInterval(function() {
 }, 200);
 
 function updatedFromHash() {
-  editor.value = obj.script;
+  editor.setValue(obj.script);
   objUpdated();
   chooseLang.value = obj.lang || "";
 }

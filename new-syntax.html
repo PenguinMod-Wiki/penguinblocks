@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>new syntax - penguinblocks dev</title>
+    <link rel="stylesheet" href="index.css">
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            background: #dddede;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .main-content {
+            display: flex;
+            width: 100%;
+            max-width: 80em;
+            gap: 2em;
+            align-items: flex-start;
+            padding: 0 1em;
+        }
+        .container {
+            background: white;
+            padding: 2em;
+            margin-top: 1em;
+            border: 1px solid #bbb;
+            flex: 1;
+            min-width: 0;
+            margin-bottom: 2em;
+        }
+        .toc {
+            position: sticky;
+            top: 1em;
+            background: white;
+            padding: 1.5em;
+            border: 1px solid #bbb;
+            width: 20em;
+            max-height: calc(100vh - 2em);
+            overflow-y: auto;
+            margin-top: 1em;
+        }
+        .toc h3 {
+            margin-top: 0;
+            margin-bottom: 1em;
+            font-size: 1.2em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5em;
+        }
+        .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .toc li {
+            margin-bottom: 0.5em;
+        }
+        .toc a {
+            background: none;
+            display: block;
+            padding: 0.2em 0;
+            color: #555;
+            transition: color 0.2s;
+        }
+        .toc a:hover {
+            color: #000;
+            background: #fffccc;
+            border-bottom: none;
+        }
+        .example {
+            margin: 2em 0;
+            padding: 1em;
+            border: 1px solid #eee;
+            background: #fdfdfd;
+        }
+        .blocks {
+            display: block;
+            margin-top: 1em;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 0.2em 0.4em;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            border: 1px solid #ddd;
+            font-family: 'Courier New', Courier, monospace;
+            display: inline-block;
+            vertical-align: middle;
+            max-width: 100%;
+        }
+        h2 {
+            margin-top: 1.5em;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3em;
+        }
+        header {
+            width: 100%;
+            max-width: 80em;
+            padding: 0 1em;
+        }
+        #title {
+            background: none;
+        }
+
+        @media screen and (max-width: 60em) {
+            .main-content {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+            .toc {
+                position: static;
+                width: 100%;
+                max-height: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>
+      penguinblocks dev
+      <span>
+        <a href="index.html"><b>back to editor</b></a>
+      </span>
+    </h1>
+</header>
+
+<div class="main-content">
+    <div id="content" class="container">
+        Loading...
+    </div>
+    <nav class="toc">
+        <h3>Contents</h3>
+        <ul id="toc-list"></ul>
+    </nav>
+</div>
+
+<script src="build/penguinblocks.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+    async function loadContent() {
+        try {
+            const response = await fetch('new-syntax.md');
+            const markdown = await response.text();
+
+            marked.use({
+                tokenizer: {
+                    codespan(src) {
+                        const match = src.match(/^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/);
+                        if (match) {
+                            return {
+                                type: 'codespan',
+                                raw: match[0],
+                                text: match[2]
+                            };
+                        }
+                        return false;
+                    }
+                },
+                renderer: {
+                    code(token) {
+                        const { text, lang } = token;
+                        if (lang === 'blocks') {
+                            return `<div class="example"><pre class="blocks">${text}</pre></div>`;
+                        }
+                        return `<pre><code class="language-${lang}">${text}</code></pre>`;
+                    }
+                }
+            });
+
+            const html = marked.parse(markdown);
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = html;
+
+            const tocList = document.getElementById('toc-list');
+            const headers = contentDiv.querySelectorAll('h2, h3');
+            headers.forEach((header, index) => {
+                const id = header.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                header.id = id;
+                
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${id}`;
+                a.textContent = header.textContent;
+                if (header.tagName === 'H3') {
+                    li.style.marginLeft = '1.5em';
+                }
+                li.appendChild(a);
+                tocList.appendChild(li);
+            });
+
+            if (window.penguinblocks) {
+                penguinblocks.renderMatching('pre.blocks', {
+                    style: 'scratch3',
+                    languages: ['en']
+                });
+            }
+        } catch (e) {
+            console.error(e);
+            document.getElementById('content').textContent = 'Error loading content.';
+        }
+    }
+
+    loadContent();
+</script>
+
+</body>
+</html>
