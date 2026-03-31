@@ -39,8 +39,8 @@ Custom block definitions can now be forced into reporter or boolean shapes. Addi
 Example:
 
 ```
-define hello (name)::reporter #000000
-return (join [Hello, ] (name) [!]::operators)
+define hello (name)::reporter #2788e8
+return (join [Hello, ] (name) [!]::operators) :: cap custom
 
 when flag clicked
 say (hello [Gen1x])
@@ -48,11 +48,11 @@ say (hello [Gen1x])
 
 
 ```blocks
-define hello (name)::reporter #000000
-return (join [Hello, ] (name) [!]::operators)
+define hello (name)::reporter #2788e8
+return (join [Hello, ] (name) [!]::operators) :: cap custom
 
 when flag clicked
 say (hello [Gen1x])
 ```
 
-The example above defines a reporter custom block with a black background. When the block is called later, it maintains that specific styling.
+The example above defines a reporter custom block with a blue background. When the block is called later, it maintains that specific styling.

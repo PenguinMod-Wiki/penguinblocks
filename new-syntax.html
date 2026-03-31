@@ -5,29 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>new syntax - penguinblocks dev</title>
     <link rel="stylesheet" href="index.css">
+    <script src="theme.js"></script>
     <style>
         html {
             scroll-behavior: smooth;
         }
         body {
-            background: #dddede;
+            background: var(--bg-color);
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-        .main-content {
-            display: flex;
-            width: 100%;
-            max-width: 80em;
-            gap: 2em;
-            align-items: flex-start;
-            padding: 0 1em;
+            color: var(--text-color);
         }
         .container {
-            background: white;
+            background: var(--container-bg);
             padding: 2em;
             margin-top: 1em;
-            border: 1px solid #bbb;
+            border: 1px solid var(--container-border);
             flex: 1;
             min-width: 0;
             margin-bottom: 2em;
@@ -35,9 +29,9 @@
         .toc {
             position: sticky;
             top: 1em;
-            background: white;
+            background: var(--container-bg);
             padding: 1.5em;
-            border: 1px solid #bbb;
+            border: 1px solid var(--container-border);
             width: 20em;
             max-height: calc(100vh - 2em);
             overflow-y: auto;
@@ -47,7 +41,7 @@
             margin-top: 0;
             margin-bottom: 1em;
             font-size: 1.2em;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--container-border);
             padding-bottom: 0.5em;
         }
         .toc ul {
@@ -62,39 +56,48 @@
             background: none;
             display: block;
             padding: 0.2em 0;
-            color: #555;
+            color: var(--text-color);
             transition: color 0.2s;
         }
         .toc a:hover {
-            color: #000;
-            background: #fffccc;
+            color: var(--text-color);
+            background: var(--toc-hover-bg);
             border-bottom: none;
         }
         .example {
             margin: 2em 0;
             padding: 1em;
-            border: 1px solid #eee;
-            background: #fdfdfd;
+            border: 1px solid var(--container-border);
+            background: var(--container-bg);
         }
         .blocks {
             display: block;
             margin-top: 1em;
         }
         code {
-            background: #f4f4f4;
+            background: var(--button-bg);
             padding: 0.2em 0.4em;
             border-radius: 5px;
             white-space: pre-wrap;
             overflow-wrap: break-word;
-            border: 1px solid #ddd;
+            border: 1px solid var(--button-border);
             font-family: 'Courier New', Courier, monospace;
             display: inline-block;
             vertical-align: middle;
             max-width: 100%;
+            color: var(--text-color);
+        }
+        .main-content {
+            display: flex;
+            width: 100%;
+            max-width: 80em;
+            gap: 2em;
+            align-items: flex-start;
+            padding: 0 1em;
         }
         h2 {
             margin-top: 1.5em;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--container-border);
             padding-bottom: 0.3em;
         }
         header {

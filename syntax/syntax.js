@@ -186,6 +186,12 @@ function paintBlock(info, children, languages) {
           hasLoopArrow: false,
         }
         const outline = new Block(outlineInfo, outlineChildren)
+
+        const defaultCustomPrimary = "#ff6680"
+        outline.info.color = procedureDefinePrototypeShellHex(defaultCustomPrimary)
+        outline.info.defineCustomPrimary = defaultCustomPrimary
+        outline.info.isDefaultColor = true
+
         children.splice(lang.definePrefix.length, 0, outline)
         break
       }
@@ -221,7 +227,7 @@ function paintBlock(info, children, languages) {
       if (lastHex) {
         const primary = normalizeHexColor(lastHex)
         defineHatPrimaryHex = primary
-        outline.info.color = primary
+        outline.info.color = procedureDefinePrototypeShellHex(primary)
         outline.info.defineCustomPrimary = primary
         outline.info.category = ""
         outline.info.categoryIsDefault = false
@@ -956,10 +962,9 @@ const listBlocks = {
 function recogniseStuff(scripts) {
   const customBlocksByHash = Object.create(null)
   const listNames = new Set()
+  const customArgs = new Map()
 
   scripts.forEach(script => {
-    const customArgs = new Set()
-
     eachBlock(script, block => {
       if (!block.isBlock) {
         return
@@ -972,6 +977,9 @@ function recogniseStuff(scripts) {
         if (!outline) {
           return
         }
+
+        const color = outline.info.defineCustomPrimary || outline.info.color
+        const defineCustomPrimary = outline.info.defineCustomPrimary
 
         const names = []
         const parts = []
@@ -992,7 +1000,7 @@ function recogniseStuff(scripts) {
 
             const name = blockName(child)
             names.push(name)
-            customArgs.add(name)
+            customArgs.set(name, { color, defineCustomPrimary })
           }
         }
         const spec = parts.join(" ")
@@ -1025,9 +1033,16 @@ function recogniseStuff(scripts) {
       ) {
         const name = blockName(block)
         if (customArgs.has(name)) {
+          const argInfo = customArgs.get(name)
           block.info.category = "custom-arg"
           block.info.categoryIsDefault = false
           block.info.selector = "getParam"
+          if (argInfo.color) {
+            block.info.color = argInfo.color
+          }
+          if (argInfo.defineCustomPrimary) {
+            block.info.defineCustomPrimary = argInfo.defineCustomPrimary
+          }
         }
 
         // list names
@@ -1046,6 +1061,27 @@ function recogniseStuff(scripts) {
 
   scripts.forEach(script => {
     eachBlock(script, block => {
+      // custom arguments (second pass for blocks identified after their definition)
+      if (
+        block.isBlock &&
+        block.info.categoryIsDefault &&
+        (block.isReporter || block.isBoolean)
+      ) {
+        const name = blockName(block)
+        if (customArgs.has(name)) {
+          const argInfo = customArgs.get(name)
+          block.info.category = "custom-arg"
+          block.info.categoryIsDefault = false
+          block.info.selector = "getParam"
+          if (argInfo.color) {
+            block.info.color = argInfo.color
+          }
+          if (argInfo.defineCustomPrimary) {
+            block.info.defineCustomPrimary = argInfo.defineCustomPrimary
+          }
+        }
+      }
+
       if (
         block.info &&
         block.info.categoryIsDefault &&

@@ -49,7 +49,13 @@ export class LabelView {
   }
 
   draw(_iconStyle, parent) {
-    if (parent && parent.info && parent.info.color && parent.isBlock) {
+    if (
+      parent &&
+      parent.info &&
+      parent.info.color &&
+      parent.isBlock &&
+      !parent.info.isDefaultColor
+    ) {
       const textColor = getContrastColor(parent.info.color)
       SVG.setProps(this.el, {
         style: `fill: ${textColor}`,
@@ -245,12 +251,16 @@ export class InputView {
     let w
     let label
     let px
+    const isDefine = parent.info.shape === "define-hat"
+    const isLiteral =
+      (this.shape === "string" || this.shape === "number") && !isDefine
+
     if (this.isBoolean) {
       w = 48
     } else if (this.isColor) {
       w = 40
     } else if (this.hasLabel) {
-      label = this.label.draw(iconStyle, parent)
+      label = this.label.draw(iconStyle, isLiteral ? this : parent)
       if (this.hasArrow) {
         px = 11
         w = this.label.width + px + 31
@@ -280,10 +290,17 @@ export class InputView {
         fill: this.value,
       })
     } else if (parent.info.color) {
-      SVG.setProps(el, {
-        fill: parent.info.color,
-        stroke: "rgba(0, 0, 0, 0.2)",
-      })
+      if (isLiteral) {
+        SVG.setProps(el, {
+          fill: "#fff",
+          stroke: "rgba(0, 0, 0, 0.2)",
+        })
+      } else {
+        SVG.setProps(el, {
+          fill: parent.info.color,
+          stroke: "rgba(0, 0, 0, 0.2)",
+        })
+      }
     } else if (this.shape === "dropdown") {
     } else if (this.shape === "number-dropdown") {
       el.classList.add(`sb3-${parent.info.category}-alt`)
@@ -724,7 +741,11 @@ class BlockView {
       const stroke = this.info.defineCustomPrimary
         ? procedureDefineSecondaryHex(this.info.defineCustomPrimary)
         : "rgba(0, 0, 0, 0.2)"
-      const props = { fill: this.info.color, stroke }
+      const fill =
+        this.info.shape === "define-hat" && this.info.defineCustomPrimary
+          ? this.info.defineCustomPrimary
+          : this.info.color
+      const props = { fill, stroke }
       if (this.info.defineCustomPrimary) {
         props["stroke-linejoin"] = "round"
         props["stroke-linecap"] = "round"
