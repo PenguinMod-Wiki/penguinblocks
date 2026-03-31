@@ -11,7 +11,10 @@ import {
   aliasExtensions,
 } from "../syntax/index.js"
 
-import { procedureDefineSecondaryHex } from "../syntax/blocks.js"
+import {
+  procedureDefineSecondaryHex,
+  getContrastColor,
+} from "../syntax/blocks.js"
 
 import SVG from "./draw.js"
 import style from "./style.js"
@@ -45,7 +48,13 @@ export class LabelView {
     return true
   }
 
-  draw(_iconStyle) {
+  draw(_iconStyle, parent) {
+    if (parent && parent.info && parent.info.color && parent.isBlock) {
+      const textColor = getContrastColor(parent.info.color)
+      SVG.setProps(this.el, {
+        style: `fill: ${textColor}`,
+      })
+    }
     return this.el
   }
 
@@ -118,7 +127,7 @@ export class IconView {
   }
 
   draw(iconStyle) {
-    let x = (this.width - this.naturalWidth) / 2
+    const x = (this.width - this.naturalWidth) / 2
     let y = (this.height - this.naturalHeight) / 2
     if (isURI(this.name)) {
       y = y + 2
@@ -180,7 +189,7 @@ export class LineView {
 
   measure() {}
 
-  draw(_iconStyle, parent) {
+  draw(_iconStyle, _parent) {
     const props = {
       class: "sb3-extension-line",
       stroke: "rgba(255, 255, 255, 0.35)",
