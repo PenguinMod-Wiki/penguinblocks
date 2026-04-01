@@ -123,6 +123,9 @@ export class IconView {
       Object.assign(this, { width: 24, height: 24 })
     } else {
       Object.assign(this, info)
+      if (this.data) delete this.data
+      this.width = this.width || 24
+      this.height = this.height || 24
     }
     this.naturalWidth = this.width
     this.naturalHeight = this.height
@@ -365,7 +368,9 @@ class BlockView {
 
     const firstChild = block.children[0]
     const firstIsURIIcon =
-      isCommand && firstChild instanceof Icon && isURI(firstChild.name)
+      isCommand &&
+      firstChild instanceof Icon &&
+      !Object.prototype.hasOwnProperty.call(Icon.icons, firstChild.name)
 
     if (
       Object.prototype.hasOwnProperty.call(aliasExtensions, this.info.category)
@@ -969,21 +974,24 @@ class DocumentView {
 
     const iconElements = [...icons]
     Object.keys(this.customIcons).forEach(name => {
-      const icon = this.customIcons[name]
+      let icon = this.customIcons[name]
       const props = {
         id: `sb3-${name}`,
         width: 24,
         height: 24,
       }
+      if (typeof icon !== "string") {
+        Object.assign(props, icon)
+        icon = icon.data
+      }
       if (icon.trim().startsWith("<svg") || icon.trim().startsWith("<g")) {
         iconElements.push(
           SVG.el("g", {
             ...props,
-            innerHTML: icon, // browser-only
+            innerHTML: icon,
           }),
         )
       } else {
-        // Image link / data URL
         iconElements.push(
           SVG.el("image", {
             ...props,

@@ -490,7 +490,10 @@ function parseLines(code, languages, options) {
               Object.prototype.hasOwnProperty.call(Icon.icons, name) ||
                 (options.icons &&
                   Object.prototype.hasOwnProperty.call(options.icons, name)) ||
-                name.startsWith("data:")
+                name.startsWith("data:") ||
+                name.includes("://") ||
+                name.startsWith("/") ||
+                name.startsWith("./")
                 ? new Icon(name)
                 : new Label(`@${name}`),
             )

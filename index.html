@@ -92,6 +92,25 @@
 </div>
 
 <textarea id="editor"></textarea>
+
+<div id="custom-icons-section">
+  <h3>Custom Icons</h3>
+  <p class="custom-icons-help">Use <code>@name</code> in your code to insert a custom icon.</p>
+  <div class="custom-icons-form">
+    <input type="text" id="new-icon-name" placeholder="Icon name (e.g. myIcon)">
+    <textarea id="new-icon-data" placeholder="Data URI or SVG code"></textarea>
+    <div class="custom-icons-form-row">
+      <input type="file" id="icon-file-upload" accept="image/*,.svg">
+      <button id="add-icon-btn">
+        <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; vertical-align: middle; margin-right: 4px;">
+          <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+        </svg>
+        Add Icon
+      </button>
+    </div>
+  </div>
+  <ul id="custom-icons-list"></ul>
+</div>
 </div>
 
 <pre id="preview" class="blocks"></pre>
@@ -103,6 +122,91 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
 
 <script>
+var customIcons = {};
+try {
+  var savedIcons = localStorage.getItem('penguinblocks-custom-icons');
+  if (savedIcons) {
+    customIcons = JSON.parse(savedIcons);
+  } else {
+    customIcons = {
+      "scratch": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOCIgZmlsbD0iI2ZmYmIxZSIvPjxjaXJjbGUgY3g9IjciIGN5PSI4IiByPSIxIi8+PGNpcmNsZSBjeD0iMTMiIGN5PSI4IiByPSIxIi8+PHBhdGggZD0iTTcgMTMgcTMgMiA2IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3N2Zz4="
+    };
+  }
+} catch (e) {}
+
+function updateIconsList() {
+  var list = document.getElementById('custom-icons-list');
+  list.innerHTML = "";
+  Object.keys(customIcons).forEach(function(name) {
+    var li = document.createElement('li');
+    li.className = "custom-icon-item";
+    
+    var preview = document.createElement('div');
+    preview.className = "custom-icon-preview";
+    
+    var data = customIcons[name];
+    if (data.trim().startsWith("<svg") || data.trim().startsWith("<g")) {
+      preview.innerHTML = data;
+      var svg = preview.querySelector('svg');
+      if (svg) {
+        svg.setAttribute('width', '24');
+        svg.setAttribute('height', '24');
+      }
+    } else {
+      var img = document.createElement('img');
+      img.src = data;
+      preview.appendChild(img);
+    }
+    
+    var nameSpan = document.createElement('span');
+    nameSpan.className = "custom-icon-name";
+    nameSpan.textContent = "@" + name;
+    
+    var delBtn = document.createElement('button');
+    delBtn.className = "delete-icon-btn";
+    delBtn.title = "Delete icon";
+    delBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+    delBtn.onclick = function() {
+      delete customIcons[name];
+      localStorage.setItem('penguinblocks-custom-icons', JSON.stringify(customIcons));
+      updateIconsList();
+      objUpdated();
+    };
+    
+    li.appendChild(preview);
+    li.appendChild(nameSpan);
+    li.appendChild(delBtn);
+    list.appendChild(li);
+  });
+}
+
+document.getElementById('add-icon-btn').addEventListener('click', function() {
+  var name = document.getElementById('new-icon-name').value.trim();
+  var data = document.getElementById('new-icon-data').value.trim();
+  if (name && data) {
+    customIcons[name] = data;
+    localStorage.setItem('penguinblocks-custom-icons', JSON.stringify(customIcons));
+    updateIconsList();
+    objUpdated();
+    document.getElementById('new-icon-name').value = "";
+    document.getElementById('new-icon-data').value = "";
+  }
+});
+
+document.getElementById('icon-file-upload').addEventListener('change', function(e) {
+  var file = e.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById('new-icon-data').value = e.target.result;
+    if (!document.getElementById('new-icon-name').value) {
+      var name = file.name.split('.')[0].replace(/[^a-zA-Z0-9_-]/g, "");
+      document.getElementById('new-icon-name').value = name;
+    }
+  };
+  reader.readAsDataURL(file);
+});
+
 var keywordToCategory = {};
 var categoryNames = new Set([
   "motion", "looks", "sound", "pen", "events", "control", "sensing", 
@@ -316,12 +420,14 @@ function objUpdated() {
 
   var doc = window.doc = penguinblocks.parse(obj.script, {
     languages: obj.lang ? ['en', obj.lang] : ['en'],
+    icons: customIcons,
   });
 
   var selectedStyle = chooseStyle.value;
   var docView = penguinblocks.newView(doc, {
     style: selectedStyle,
-    scale: selectedStyle === "scratch2" ? 1 : 0.675
+    scale: selectedStyle === "scratch2" ? 1 : 0.675,
+    icons: customIcons,
   });
   
   var svg = docView.render();
@@ -368,6 +474,7 @@ function updatedFromHash() {
 }
 
 updatedFromHash();
+updateIconsList();
 
 </script>
 

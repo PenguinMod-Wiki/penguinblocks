@@ -100,6 +100,9 @@ class IconView {
       Object.assign(this, { width: 14, height: 11 })
     } else {
       Object.assign(this, info)
+      if (this.data) delete this.data
+      this.width = this.width || 14
+      this.height = this.height || 11
     }
   }
 
@@ -770,11 +773,15 @@ class DocumentView {
         darkFilter("inputDarkFilter"),
         ...makeIcons(),
         ...Object.keys(this.customIcons).map(name => {
-          const icon = this.customIcons[name]
+          let icon = this.customIcons[name]
           const props = {
             id: name,
             width: 14,
             height: 11,
+          }
+          if (typeof icon !== "string") {
+            Object.assign(props, icon)
+            icon = icon.data
           }
           if (icon.trim().startsWith("<svg") || icon.trim().startsWith("<g")) {
             return SVG.el("g", {
