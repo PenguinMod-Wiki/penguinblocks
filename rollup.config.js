@@ -21,13 +21,14 @@ const env = {
 }
 
 const bannerText = `
-<%= pkg.name %> v<%= pkg.version %>
-<%= pkg.homepage %>
-<%= pkg.description %>
-
-Copyright 2013–<%= moment().format('YYYY') %>, <%= pkg.author %>
-@license <%= pkg.license %>
-`.trim()
+/**
+ * <%= pkg.name %> v<%= pkg.version %>
+ * <%= pkg.homepage %>
+ * <%= pkg.description %>
+ *
+ * Copyright <%= new Date().getFullYear() %>, PenguinMod Wiki
+ * @license <%= pkg.license %>
+ */`.trim()
 
 const commonPreBabelOperations = isLocale => [
   isLocale ? undefined : csso({ minify: env.prod }),
