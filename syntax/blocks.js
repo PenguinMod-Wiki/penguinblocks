@@ -29,7 +29,7 @@ export const overrideShapes = [
   "reporter",
   "ring",
   "cat",
-  "hexagonal",
+  "octagonal",
   "round",
   "square",
   "leaf",

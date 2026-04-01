@@ -51,7 +51,7 @@ const makeCustomShape = (shape, w, h, props) => {
   return SVG.path({ ...props, path })
 }
 
-const hexagonalShape = (w, h, props) =>
+const octagonalShape = (w, h, props) =>
   SVG.path({
     ...props,
     path: [
@@ -402,7 +402,7 @@ export class InputView {
       stack: SVG.stackRect,
       reporter: SVG.pillRect,
 
-      hexagonal: hexagonalShape,
+      octagonal: octagonalShape,
       round: roundShape,
       square: squareShape,
       leaf: leafShape,
@@ -436,7 +436,7 @@ export class InputView {
           customShape.padding &&
           typeof customShape.padding.left === "number"
             ? customShape.padding.left
-            : this.shape === "hexagonal" || this.shape === "round"
+            : this.shape === "octagonal" || this.shape === "round"
               ? 16
               : this.shape === "leaf" || this.shape === "plus" || this.shape === "ticket"
                 ? 24
@@ -456,7 +456,7 @@ export class InputView {
           customShape.padding &&
           typeof customShape.padding.left === "number"
             ? customShape.padding.left
-            : this.shape === "hexagonal" || this.shape === "round"
+            : this.shape === "octagonal" || this.shape === "round"
               ? 16
               : this.shape === "leaf" || this.shape === "plus" || this.shape === "ticket"
                 ? 24
@@ -657,7 +657,7 @@ class BlockView {
       "define-hat": SVG.procHatRect,
       ring: SVG.pillRect,
 
-      hexagonal: hexagonalShape,
+      octagonal: octagonalShape,
       round: roundShape,
       square: squareShape,
       leaf: leafShape,
@@ -730,7 +730,7 @@ class BlockView {
       hat: [24, 8],
       cat: [24, 8],
       "define-hat": [20, 16],
-      hexagonal: [4, 4],
+      octagonal: [4, 4],
       round: [4, 4],
       square: [4, 4],
       leaf: [4, 4],
@@ -759,7 +759,7 @@ class BlockView {
     }
 
     const shape = this.info.shape
-    if (shape === "hexagonal" || shape === "round") {
+    if (shape === "octagonal" || shape === "round") {
       return 16
     }
     if (shape === "leaf" || shape === "plus" || shape === "ticket") {
