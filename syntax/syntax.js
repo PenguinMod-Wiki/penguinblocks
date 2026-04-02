@@ -121,6 +121,13 @@ function paintBlock(info, children, languages, options) {
         children = [new Label(". . .")]
       }
     } else {
+      const firstChild = children[0]
+      if (firstChild && firstChild.isLabel && firstChild.value.toLowerCase().startsWith('return')) {
+        info.shape = "cap"
+        info.category = "custom"
+        info.categoryIsDefault = false
+      }
+
       // The block was not recognised, so we check if it's a define block.
       //
       // We check for built-in blocks first to avoid ambiguity, e.g. the
