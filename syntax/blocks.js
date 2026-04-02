@@ -163,6 +163,7 @@ export const unicodeIcons = {
   "@turnLeft": "↺",
   "@addInput": "▸",
   "@delInput": "◂",
+  "@stopSign": "⬛",
 }
 
 export const allLanguages = {}
@@ -247,6 +248,7 @@ export const english = {
     "when flag clicked": "EVENT_WHENFLAGCLICKED",
     "when gf clicked": "EVENT_WHENFLAGCLICKED",
     "when green flag clicked": "EVENT_WHENFLAGCLICKED",
+    "when stop clicked": "CONTROL_WHENSTOPCLICKED",
   },
 
   renamedBlocks: {

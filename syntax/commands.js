@@ -623,6 +623,13 @@ export default [
     category: "control",
   },
   {
+    id: "CONTROL_WHENSTOPCLICKED",
+    spec: "when @stopSign clicked",
+    inputs: [],
+    shape: "hat",
+    category: "control",
+  },
+  {
     id: "CONTROL_CREATECLONEOF",
     selector: "createCloneOf",
     spec: "create clone of %1",
