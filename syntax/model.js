@@ -366,7 +366,7 @@ export class Block {
 export class Checkbox {
   constructor(value) {
     this.value = value
-    this.width = 40
+    this.width = 48
     this.height = 32
     this.x = 0
   }

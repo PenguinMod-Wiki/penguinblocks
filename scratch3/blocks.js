@@ -1477,7 +1477,7 @@ class DocumentView {
 class CheckboxView {
   constructor(node) {
     this.value = node.value
-    this.width = 40
+    this.width = 48
     this.height = 32
     this.x = 0
   }
@@ -1489,12 +1489,13 @@ class CheckboxView {
   measure() {}
 
   draw(iconStyle, parent) {
-    const w = 40
+    const w = 48
     const h = 32
 
     const bg = SVG.pointedRect(w, h, {
       fill: this.value ? "#33D833" : "rgba(0, 0, 0, 0.21)",
       stroke: this.value ? "#389438" : "rgba(0, 0, 0, 0)",
+      class: "sb3-input sb3-input-boolean",
     })
 
     const checkmarkD = this.value
@@ -1506,9 +1507,14 @@ class CheckboxView {
       transform: `translate(${w / 2} ${h / 2}) scale(1.5)`,
       fill: "#fff",
       opacity: this.value ? "1" : "0.5",
+      class: "sb3-checkbox",
     })
 
     this.el = SVG.group([bg, mark])
+    SVG.setProps(this.el, {
+      "data-argument-type": "checkbox",
+      "data-shapes": "argument boolean",
+    })
     return this.el
   }
 }
