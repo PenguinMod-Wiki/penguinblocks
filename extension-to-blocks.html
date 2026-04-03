@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<meta charset="utf8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<title>Extension to Blocks - penguinblocks</title>
+
+<meta name=description content="Convert Scratch extensions to penguinblocks syntax.">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel=stylesheet href="index.css">
+<script src="theme.js"></script>
+<style>
+.CodeMirror {
+  height: 100%;
+}
+
+#preview > svg {
+  display: block;
+  margin-bottom: 20px;
+  max-width: 100%;
+  height: auto;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1em;
+}
+
+.page-wrapper {
+  width: 100%;
+  max-width: 80em;
+  padding: 0 1rem;
+}
+
+header {
+  width: 100%;
+  max-width: 80em;
+  padding: 0 1rem;
+}
+
+h1 {
+  border-bottom: 1px solid var(--container-border);
+  padding-bottom: 0.3em;
+  width: 100%;
+}
+
+.page-body {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+  margin-top: 2rem;
+}
+
+@media screen and (min-width: 62em) {
+  body {
+    padding: 1em !important;
+  }
+  
+  #side, #editor {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+
+  #preview {
+    position: relative !important;
+    width: auto !important;
+    height: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.card {
+  background: var(--container-bg);
+  border: 1px solid var(--container-border);
+  
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--container-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0,0,0,0.02);
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+
+.card-body {
+  padding: 1rem;
+}
+
+.upload-area {
+  border: 2px dashed var(--container-border);
+  
+  padding: 1.5rem 1rem;
+  text-align: center;
+  background: var(--container-bg);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.upload-area:hover {
+  border-color: var(--cm-variables);
+  background: rgba(238, 125, 22, 0.05);
+}
+
+.upload-area.dragover {
+  border-color: var(--cm-variables);
+  background: var(--link-bg);
+}
+
+.upload-area input[type="file"] {
+  display: none;
+}
+
+.upload-area p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
+.upload-button {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#extensionName {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 0.25rem 0;
+  color: var(--text-color);
+  line-height: 1.2;
+}
+
+#extensionId {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--cm-variables);
+  background: rgba(238, 125, 22, 0.1);
+  padding: 2px 6px;
+  
+  display: inline-block;
+}
+
+.metadata-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.metadata-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  opacity: 0.5;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--container-border);
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.extension-icons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.icon-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0,0,0,0.03);
+  padding: 0.75rem;
+  
+  border: 1px solid var(--container-border);
+}
+
+.icon-item span {
+  font-size: 0.65rem;
+  font-weight: bold;
+  opacity: 0.6;
+  text-transform: uppercase;
+}
+
+.icon-preview {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-preview img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.color-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 0.5rem 0;
+}
+
+.color-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  
+  border: 2px solid var(--container-bg);
+  box-shadow: 0 0 0 1px var(--container-border), 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+
+.color-value {
+  font-size: 0.65rem;
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.7;
+}
+
+.code-output {
+  background: var(--editor-bg);
+  border: 1px solid var(--container-border);
+  
+  padding: 0.75rem;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  color: var(--editor-text);
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.copy-button {
+  font-size: 0.85rem;
+  padding: 4px 10px;
+  margin: 0;
+}
+
+.copy-button.copied {
+  background: var(--cm-operators) !important;
+  border-color: var(--cm-operators) !important;
+  color: white !important;
+}
+
+#preview {
+  position: relative;
+  overflow: auto;
+  background-color: var(--editor-bg);
+  background-image: 
+    radial-gradient(circle, var(--container-border) 1px, transparent 1px);
+  background-size: 20px 20px;
+  padding: 3rem;
+  
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+  transition: background-color 0.3s;
+}
+
+[data-theme="dark"] #preview {
+  background-image: 
+    radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+}
+
+#preview svg {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.card-body:has(#preview) {
+  padding: 0;
+}
+
+.preview-hint {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.message-container {
+  margin-top: 0.5rem;
+}
+
+.error-message, .success-message {
+  padding: 0.75rem 1rem;
+  
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  background: rgba(212, 25, 25, 0.1);
+  border: 1px solid var(--cm-obsolete);
+  color: var(--cm-obsolete);
+}
+
+.success-message {
+  background: rgba(92, 183, 18, 0.1);
+  border: 1px solid var(--cm-operators);
+  color: var(--cm-operators);
+}
+
+.block-copy-toast {
+  position: absolute;
+  background: var(--cm-variables, #4a90d9);
+  color: #fff;
+  font-size: 0.78em;
+  padding: 2px 8px;
+  
+  pointer-events: none;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  animation: toast-fade 1.2s ease forwards;
+  z-index: 10;
+}
+
+.loader-container {
+  margin-top: 1.25rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.loader-box {
+  background: transparent;
+  padding: 0;
+  
+  box-shadow: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.loader-title {
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+  opacity: 0.8;
+}
+
+progress {
+  width: 100%;
+  height: 14px;
+  
+  overflow: hidden;
+  border: 1px solid var(--container-border);
+  background: rgba(0,0,0,0.05);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+progress::-webkit-progress-bar {
+  background: rgba(0,0,0,0.05);
+}
+
+progress::-webkit-progress-value {
+  background-image: linear-gradient(
+    45deg, 
+    var(--cm-variables) 25%, 
+    rgba(255, 255, 255, 0.15) 25%, 
+    rgba(255, 255, 255, 0.15) 50%, 
+    var(--cm-variables) 50%, 
+    var(--cm-variables) 75%, 
+    rgba(255, 255, 255, 0.15) 75%, 
+    rgba(255, 255, 255, 0.15)
+  );
+  background-size: 30px 30px;
+  background-color: var(--cm-variables);
+  animation: progress-stripes 1s linear infinite;
+  transition: width 0.2s ease;
+  
+}
+
+progress::-moz-progress-bar {
+  background-image: linear-gradient(
+    45deg, 
+    var(--cm-variables) 25%, 
+    rgba(255, 255, 255, 0.15) 25%, 
+    rgba(255, 255, 255, 0.15) 50%, 
+    var(--cm-variables) 50%, 
+    var(--cm-variables) 75%, 
+    rgba(255, 255, 255, 0.15) 75%, 
+    rgba(255, 255, 255, 0.15)
+  );
+  background-size: 30px 30px;
+  background-color: var(--cm-variables);
+  animation: progress-stripes 1s linear infinite;
+  
+}
+
+@keyframes progress-stripes {
+  from { background-position: 0 0; }
+  to { background-position: 30px 0; }
+}
+
+.loader-status {
+  margin-top: 0.4rem;
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+.upload-area.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  filter: grayscale(0.5);
+  cursor: not-allowed;
+}
+
+@keyframes toast-fade {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0); }
+  70%  { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+}
+
+@media screen and (max-width: 900px) {
+  .page-body {
+    grid-template-columns: 1fr;
+  }
+  
+  .sidebar {
+    order: 1;
+  }
+  
+  .main-content {
+    order: 2;
+  }
+}
+</style>
+
+<body>
+
+<header>
+    <h1>
+      penguinblocks dev
+      <span>
+        <a href="index.html"><b>back to editor</b></a>
+      </span>
+    </h1>
+</header>
+
+<div class="page-wrapper">
+  <div class="intro-section">
+    <h2>Extension to Blocks Converter</h2>
+    <p>Upload a Scratch extension (.js file) to convert it to penguinblocks syntax and see how the blocks will render.</p>
+    <p><b>Note:</b> This tool is still in development and may not work with all extensions.<br>Certain extensions may not render correctly due to their complexity.</p>
+  </div>
+
+  <div class="page-body">
+    <div class="sidebar">
+      <div class="card">
+        <div class="card-header">
+          <h3>Upload</h3>
+        </div>
+        <div class="card-body">
+          <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+            <p>Drag and drop your extension file here, or click to browse</p>
+            <input type="file" id="fileInput" accept=".js,.json">
+            <button class="upload-button">Choose File</button>
+          </div>
+          <div id="loader" class="loader-container">
+            <div class="loader-box">
+              <div class="loader-title">Converting Extension...</div>
+              <progress id="progressBar" value="0" max="100"></progress>
+              <div id="loaderStatus" class="loader-status">Initializing...</div>
+            </div>
+          </div>
+          <div id="messageArea" class="message-container"></div>
+        </div>
+      </div>
+
+      <div id="extensionInfo" class="card" style="display: none;">
+        <div class="card-header">
+          <h3>Extension Metadata</h3>
+        </div>
+        <div class="card-body">
+          <div class="info-grid">
+            <div class="metadata-section">
+              <h4 id="extensionName"></h4>
+              <div id="extensionId"></div>
+            </div>
+            
+            <div class="metadata-section">
+              <div class="metadata-label">Visual Assets</div>
+              <div class="extension-icons">
+                <div class="icon-item">
+                  <div class="icon-preview" id="categoryIcon"></div>
+                  <span>Category</span>
+                </div>
+                <div class="icon-item">
+                  <div class="icon-preview" id="blockIcon"></div>
+                  <span>Block</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="metadata-section">
+              <div class="metadata-label">Theme Palette</div>
+              <div class="color-palette" id="colorPalette"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="codePanel" class="card" style="display: none;">
+        <div class="card-header">
+          <h3>Generated Syntax</h3>
+          <button class="copy-button" onclick="copyCode()">Copy All</button>
+        </div>
+        <div class="card-body">
+          <div class="code-output" id="codeOutput"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div id="outputArea" class="card" style="display: none;">
+        <div class="card-header">
+          <h3>Block Preview</h3>
+          <span class="preview-hint">Click a block to copy its syntax</span>
+        </div>
+        <div class="card-body">
+          <div id="preview" class="blocks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="build/penguinblocks.min.js"></script>
+<script src="build/translations-all.js"></script>
+
+<script>
+const BLOCK_TYPES = new Set(['command', 'reporter', 'boolean', 'hat', 'event']);
+
+const uploadArea   = document.getElementById('uploadArea');
+const fileInput    = document.getElementById('fileInput');
+const extensionInfo = document.getElementById('extensionInfo');
+const outputArea   = document.getElementById('outputArea');
+const codePanel    = document.getElementById('codePanel');
+const messageArea  = document.getElementById('messageArea');
+
+const loader       = document.getElementById('loader');
+const progressBar  = document.getElementById('progressBar');
+const loaderStatus = document.getElementById('loaderStatus');
+
+const yieldToMain = () => new Promise(resolve => setTimeout(resolve, 0));
+
+let currentBlocks = '';
+
+uploadArea.addEventListener('dragover', e => {
+  e.preventDefault();
+  uploadArea.classList.add('dragover');
+});
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => {
+  if (e.target.files.length > 0) handleFile(e.target.files[0]);
+});
+
+function showMessage(message, type = 'error') {
+  const cls = type === 'error' ? 'error-message' : 'success-message';
+  messageArea.innerHTML = `<div class="${cls}">${message}</div>`;
+  setTimeout(() => { messageArea.innerHTML = ''; }, 5000);
+}
+
+async function handleFile(file) {
+  if (!file.name.endsWith('.js') && !file.name.endsWith('.json')) {
+    showMessage('Please upload a .js or .json extension file.');
+    return;
+  }
+
+  extensionInfo.style.display = 'none';
+  outputArea.style.display = 'none';
+  codePanel.style.display = 'none';
+  messageArea.innerHTML = '';
+
+  loader.style.display = 'flex';
+  uploadArea.classList.add('disabled');
+  progressBar.value = 0;
+  loaderStatus.textContent = 'Reading file...';
+
+  const reader = new FileReader();
+  reader.onload = async e => {
+    try {
+      const content = e.target.result;
+      
+      loaderStatus.textContent = 'Parsing extension logic...';
+      await yieldToMain();
+      const extension = parseExtension(content, file.name);
+      
+      if (extension) {
+        displayExtension(extension);
+        await generateBlocks(extension);
+      }
+    } catch (error) {
+      console.error('Parser Error:', error);
+      showMessage('Error parsing extension: ' + error.message);
+    } finally {
+      loader.style.display = 'none';
+      uploadArea.classList.remove('disabled');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function parseExtension(content, filename) {
+  try {
+    if (filename.endsWith('.json')) {
+      return JSON.parse(content);
+    }
+
+    let capturedExtension = null;
+
+    const createSafeProxy = (name, base = {}) => {
+      const target = typeof base === 'function' ? base : function() {};
+      Object.assign(target, base);
+      
+      return new Proxy(target, {
+        get(t, prop) {
+          if (prop === 'then') return undefined;
+          if (prop === Symbol.toPrimitive) return () => name;
+          if (prop in t) return t[prop];
+          return createSafeProxy(`${name}.${String(prop)}`);
+        },
+        apply(t, thisArg, args) {
+          return createSafeProxy(`${name}()`);
+        },
+        construct(t, args) {
+          return createSafeProxy(`new ${name}`);
+        }
+      });
+    };
+
+    const mockRuntime = createSafeProxy('runtime', {
+      on: () => {},
+      emit: () => {},
+      stageWidth: 480,
+      stageHeight: 360,
+      targets: [],
+      extensionStorage: {},
+      extensionManager: {
+        loadExtensionIdSync: () => {}
+      },
+      get postMode() { return false; },
+      sequencer: {
+        stepThread: () => {}
+      }
+    });
+
+    const mockRenderer = createSafeProxy('renderer', {
+      get canvas() { return document.createElement('canvas'); },
+      extractDrawableScreenSpace: () => null,
+      _drawList: []
+    });
+
+    const mockVM = {
+      runtime: mockRuntime,
+      renderer: mockRenderer,
+      get editingTarget() {
+        return {
+          isStage: true,
+          sprite: { name: 'Stage' },
+          id: 'stage_id'
+        };
+      },
+      setEditingTarget: () => {}
+    };
+
+    const safeVM = createSafeProxy('vm', mockVM);
+    const safeRuntime = safeVM.runtime;
+
+    const mockScratch = {
+      extensions: {
+        register: (ext) => { capturedExtension = ext; },
+        isPenguinMod: true,
+        unsandboxed: true
+      },
+      vm: safeVM,
+      runtime: safeRuntime,
+      renderer: mockRenderer,
+      BlockType: {
+        COMMAND: 'command',
+        REPORTER: 'reporter',
+        BOOLEAN: 'boolean',
+        HAT: 'hat',
+        EVENT: 'event',
+        CONDITIONAL: 'conditional',
+        LOOP: 'loop',
+        LABEL: 'label',
+        BUTTON: 'button',
+      },
+      ArgumentType: {
+        STRING:  'string',
+        NUMBER:  'number',
+        BOOLEAN: 'boolean',
+        ANGLE:   'angle',
+        COLOR:   'color',
+        MATRIX:  'matrix',
+        NOTE:    'note',
+        IMAGE:   'image',
+      },
+      BlockShape: {
+        HEXAGONAL: 'hexagonal',
+        ROUND:     'round',
+        SQUARE:    'square',
+        LEAF:      'leaf',
+        PLUS:      'plus',
+        OCTAGONAL: 'octagonal',
+        BUMPED:    'bumped',
+        INDENTED:  'indented',
+        SCRAPPED:  'scrapped',
+        ARROW:     'arrow',
+        TICKET:    'ticket',
+      },
+      fetch: () => Promise.resolve({ json: () => ({}), text: () => '' }),
+      translate: t => t,
+      canFetch: () => true,
+      canOpenTab: () => true,
+      canReadClipboard: () => true,
+      canNotify: () => true,
+      canGeolocate: () => true,
+      gui: {
+        theme: 'default'
+      },
+      Cast: {
+        toNumber: v => Number(v) || 0,
+        toString: v => String(v),
+        toBoolean: v => Boolean(v),
+      },
+    };
+
+    try {
+      const fn = new Function('Scratch', 'vm', 'scaffolding', 'window', 'self', 'globalThis', content);
+      const result = fn(mockScratch, safeVM, undefined, window, window, window);
+      const extension = capturedExtension || result;
+
+      if (!extension || typeof extension !== 'object') {
+        throw new Error('Extension did not register or return an object.');
+      }
+
+      return extension;
+    } catch (execErr) {
+      if (capturedExtension) return capturedExtension;
+      throw execErr;
+    }
+  } catch (err) {
+    throw new Error('Failed to parse extension: ' + err.message);
+  }
+}
+
+function displayExtension(extension) {
+  const info = typeof extension.getInfo === 'function' ? extension.getInfo() : extension;
+
+  document.getElementById('extensionName').textContent = info.name || 'Unknown Extension';
+  document.getElementById('extensionId').textContent   = info.id   || 'unknown';
+
+  const categoryIcon = document.getElementById('categoryIcon');
+  const blockIcon    = document.getElementById('blockIcon');
+  
+  categoryIcon.innerHTML = info.menuIconURI  ? `<img src="${info.menuIconURI}" alt="Category Icon">` : '<span style="opacity:0.3;font-size:0.6rem">NONE</span>';
+  blockIcon.innerHTML    = info.blockIconURI ? `<img src="${info.blockIconURI}" alt="Block Icon">`    : '<span style="opacity:0.3;font-size:0.6rem">NONE</span>';
+
+  const palette = document.getElementById('colorPalette');
+  palette.innerHTML = '';
+  
+  ['color1', 'color2', 'color3'].forEach(key => {
+    if (info[key]) {
+      const color = info[key].replace(/^(?!#)/, '#');
+      
+      const item = document.createElement('div');
+      item.className = 'color-item';
+      
+      const swatch = document.createElement('div');
+      swatch.className = 'color-swatch';
+      swatch.style.backgroundColor = color;
+      
+      const val = document.createElement('span');
+      val.className = 'color-value';
+      val.textContent = color.toUpperCase();
+      
+      item.appendChild(swatch);
+      item.appendChild(val);
+      palette.appendChild(item);
+    }
+  });
+
+  extensionInfo.style.display = 'block';
+}
+
+async function generateBlocks(extension) {
+  const info   = typeof extension.getInfo === 'function' ? extension.getInfo() : extension;
+  const blocks = info.blocks || [];
+
+  window._extMenus = info.menus || {};
+
+  const color1 = info.color1 ? info.color1.replace(/^(?!#)/, '#') : 'extension';
+
+  const lines = [];
+  const total = blocks.length;
+
+  for (let i = 0; i < total; i++) {
+    const block = blocks[i];
+    if (typeof block === 'object' && block !== null && BLOCK_TYPES.has(block.blockType)) {
+      const line = convertBlock(block, color1);
+      if (line) lines.push(line);
+    }
+    
+    if (i % 20 === 0 || i === total - 1) {
+      const progress = Math.round((i / total) * 30);
+      progressBar.value = progress;
+      loaderStatus.textContent = `Converting blocks (${i + 1}/${total})...`;
+      await yieldToMain();
+    }
+  }
+
+  if (lines.length === 0) {
+    showMessage('No renderable blocks found (command, reporter, boolean, hat, event).');
+    return;
+  }
+
+  currentBlocks = lines.join('\n\n');
+
+  document.getElementById('codeOutput').textContent = currentBlocks;
+
+  await renderBlocks(lines);
+
+  outputArea.style.display = 'block';
+  codePanel.style.display  = 'block';
+  showMessage('Extension converted successfully!', 'success');
+}
+
+const BLOCK_SHAPE_KEYWORDS = {
+  hexagonal: 'boolean',
+  round:     null,
+  square:    'square',
+  leaf:      'leaf',
+  plus:      'plus',
+  octagonal: 'octagonal',
+  bumped:    'bumped',
+  indented:  'indented',
+  scrapped:  'scrapped',
+  arrow:     'arrow',
+  ticket:    'ticket',
+};
+
+function convertBlock(block, color) {
+  const rawText = block.text || block.opcode || '';
+  const args    = block.arguments || {};
+
+  const filledText = fillArgs(rawText, args);
+
+  const shapeKeyword = block.blockShape
+    ? (BLOCK_SHAPE_KEYWORDS[block.blockShape] ?? block.blockShape)
+    : null;
+
+  const annotation = shapeKeyword
+    ? ` :: ${color} ${shapeKeyword}`
+    : ` :: ${color}`;
+
+  switch (block.blockType) {
+    case 'hat':
+    case 'event':
+      return `when ${filledText}${annotation} hat`;
+
+    case 'command':
+      return `${filledText}${annotation}`;
+
+    case 'reporter':
+      if (shapeKeyword) return `${filledText}${annotation}`;
+      return `(${filledText}${annotation})`;
+
+    case 'boolean':
+      if (shapeKeyword) return `${filledText}${annotation}`;
+      return `<${filledText}${annotation}>`;
+
+    default:
+      return null;
+  }
+}
+
+function fillArgs(text, args) {
+  return text.replace(/\[([A-Z0-9_]+)\]/g, (_, key) => {
+    const arg = args[key];
+    if (!arg) return `[${key}]`;
+
+    switch (arg.type) {
+      case 'string':
+        if (arg.menu) return menuDropdown(arg.menu, arg.defaultValue);
+        return `[${arg.defaultValue !== undefined ? arg.defaultValue : key}]`;
+
+      case 'number':
+      case 'angle':
+      case 'note':
+        return `(${arg.defaultValue !== undefined ? arg.defaultValue : '10'})`;
+
+      case 'boolean':
+        return `<false :: shadow>`;
+
+      case 'color':
+        return `[${arg.defaultValue || '#ff0000'}]`;
+
+      case 'matrix':
+        return `[matrix]`;
+
+      case 'image':
+        return ``;
+
+      default:
+        if (arg.menu) return menuDropdown(arg.menu, arg.defaultValue);
+        return `[${arg.defaultValue !== undefined ? arg.defaultValue : key}]`;
+    }
+  });
+}
+
+function menuDropdown(menuName, argDefault) {
+  const menus = window._extMenus || {};
+  const menu  = menus[menuName];
+  const val   = getMenuDefault(menuName, argDefault);
+  const acceptReporters = menu && !Array.isArray(menu) && menu.acceptReporters;
+  return acceptReporters ? `(${val} v)` : `[${val} v]`;
+}
+
+function getMenuDefault(menuName, argDefault) {
+  const menus = window._extMenus || {};
+  const menu  = menus[menuName];
+
+  if (menu) {
+    const items = Array.isArray(menu) ? menu : (menu.items || []);
+    if (items.length > 0) {
+      const first = items[0];
+      return typeof first === 'string'
+        ? first
+        : (first.text || first.value || menuName);
+    }
+  }
+
+  return argDefault !== undefined ? String(argDefault) : menuName;
+}
+
+async function renderBlocks(lines) {
+  const preview = document.getElementById('preview');
+  preview.innerHTML = '';
+  
+  const total = lines.length;
+  let activeToast = null;
+
+  for (let i = 0; i < total; i++) {
+    const code = lines[i];
+    
+    try {
+      const doc = penguinblocks.parse(code, { languages: ['en'] });
+      const docView = penguinblocks.newView(doc, {
+        style: 'scratch3',
+        scale: 0.675,
+      });
+      
+      const svg = docView.render();
+      preview.appendChild(svg);
+      
+      const scaledGroup = svg.querySelector('g[style*="scale"]');
+      const scriptGroup = scaledGroup ? scaledGroup.querySelector(':scope > g') : null;
+      
+      const target = scriptGroup || svg;
+      target.style.cursor = 'pointer';
+      target.setAttribute('title', 'Click to copy');
+
+      target.addEventListener('click', (e) => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(code);
+        } else {
+          const ta = document.createElement('textarea');
+          ta.value = code;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+        }
+
+        if (activeToast) activeToast.remove();
+        
+        const toast = document.createElement('div');
+        toast.className = 'block-copy-toast';
+        toast.textContent = 'Copied!';
+        activeToast = toast;
+
+        const previewRect = preview.getBoundingClientRect();
+        
+        const left = e.clientX - previewRect.left + preview.scrollLeft;
+        const top  = e.clientY - previewRect.top  + preview.scrollTop - 20;
+        
+        toast.style.left  = left + 'px';
+        toast.style.top   = top  + 'px';
+        preview.appendChild(toast);
+
+        setTimeout(() => {
+          if (activeToast === toast) {
+            toast.remove();
+            activeToast = null;
+          }
+        }, 1200);
+      });
+    } catch (e) {
+      console.error('Failed to render block:', code, e);
+    }
+
+    if (i % 5 === 0 || i === total - 1) {
+      const progress = 30 + Math.round((i / total) * 70);
+      progressBar.value = progress;
+      loaderStatus.textContent = `Rendering blocks (${i + 1}/${total})...`;
+      await yieldToMain();
+    }
+  }
+}
+
+function copyCode() {
+  navigator.clipboard
+    ? navigator.clipboard.writeText(currentBlocks)
+    : (() => {
+        const ta = document.createElement('textarea');
+        ta.value = currentBlocks;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      })();
+
+  const btn = document.querySelector('.copy-button');
+  btn.textContent = 'Copied!';
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.textContent = 'Copy All';
+    btn.classList.remove('copied');
+  }, 2000);
+}
+</script>
