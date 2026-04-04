@@ -75,10 +75,10 @@ export class Icon {
   }
 
   stringify() {
-    if (this.name.startsWith("data:")) {
-      return `@(${this.name})`
+    if (Icon.icons[this.name]) {
+      return unicodeIcons[`@${this.name}`] || `@${this.name}`
     }
-    return unicodeIcons[`@${this.name}`] || `@${this.name}`
+    return `@(${this.name})`
   }
 }
 

@@ -915,7 +915,7 @@ function parseScripts(getLine) {
           b.diff = null
         }
 
-        if (b.isElse || b.isEnd) {
+        if ((b.isElse && !b.isElseIf) || b.isEnd) {
           b = new Block({ ...b.info, shape: "stack" }, b.children)
         }
 
