@@ -11,7 +11,7 @@ test("basic motion blocks", () => {
 })
 
 test("basic looks blocks with strings", () => {
-  const code = 'say [Hello!] for (2) seconds'
+  const code = "say [Hello!] for (2) seconds"
   const doc = parse(code)
   const block = doc.scripts[0].blocks[0]
   expect(block.info.id).toBe("LOOKS_SAYFORSECS")
