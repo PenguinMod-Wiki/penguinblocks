@@ -42,7 +42,7 @@ class Renderer {
   }
 
   async snapshot(script, options) {
-    const args = [script, options, this.scale]
+    const args = [script, options || {}, this.scale || 2]
       .map(x => JSON.stringify(x))
       .join(", ")
     const dataURL = await this.page.evaluate(`render(${args})`)
@@ -54,7 +54,8 @@ class Renderer {
   }
 
   async snapshotToFile(script, options, fpath) {
-    const buffer = await this.snapshot(script, options, this.scale)
+    if (!fpath) throw new Error("File path is required")
+    const buffer = await this.snapshot(script, options)
     await fs.mkdir(path.dirname(fpath), { recursive: true })
     await fs.writeFile(fpath, buffer)
   }
