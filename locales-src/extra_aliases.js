@@ -244,4 +244,3 @@ export default {
   //   '': 'penguinblocks:end',
   // },
 }
-

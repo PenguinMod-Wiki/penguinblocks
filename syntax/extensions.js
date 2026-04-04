@@ -32,4 +32,3 @@ export const aliasExtensions = {
   wedo2: "wedo",
   text2speech: "tts",
 }
-

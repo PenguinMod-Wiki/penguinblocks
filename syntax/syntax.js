@@ -68,25 +68,27 @@ function paintBlock(info, children, languages, options) {
 
   let lang
   let type
-  
+
   if (options.detect_blocks) {
-    const fullText = children.map(child => {
-      if (child.isLabel) return child.value
-      if (child.isIcon) return `@${child.name}`
-      if (child.isInput) {
-        if (child.shape === 'string') return `[${child.value}]`
-        if (child.shape === 'number') return `(${child.value})`
-        if (child.shape === 'boolean') return `<${child.value}>`
-        return child.value
-      }
-      return ''
-    }).join(' ')
-    
+    const fullText = children
+      .map(child => {
+        if (child.isLabel) return child.value
+        if (child.isIcon) return `@${child.name}`
+        if (child.isInput) {
+          if (child.shape === "string") return `[${child.value}]`
+          if (child.shape === "number") return `(${child.value})`
+          if (child.shape === "boolean") return `<${child.value}>`
+          return child.value
+        }
+        return ""
+      })
+      .join(" ")
+
     const detectedPattern = detectBlockPattern(fullText)
     if (detectedPattern) {
       const detectedWords = detectedPattern.split(" ")
       const detectedChildren = []
-      
+
       for (const word of detectedWords) {
         if (word.startsWith("@")) {
           detectedChildren.push(new Icon(word.slice(1)))
@@ -99,7 +101,7 @@ function paintBlock(info, children, languages, options) {
           detectedChildren.push(new Label(word))
         }
       }
-      
+
       children = detectedChildren
       const detectedString = detectedWords.join(" ")
       info.hash = minifyHash(detectedString)
@@ -161,7 +163,11 @@ function paintBlock(info, children, languages, options) {
       }
     } else {
       const firstChild = children[0]
-      if (firstChild && firstChild.isLabel && firstChild.value.toLowerCase().startsWith('return')) {
+      if (
+        firstChild &&
+        firstChild.isLabel &&
+        firstChild.value.toLowerCase().startsWith("return")
+      ) {
         info.shape = "cap"
         info.category = "custom"
         info.categoryIsDefault = false
@@ -237,7 +243,8 @@ function paintBlock(info, children, languages, options) {
         const outline = new Block(outlineInfo, outlineChildren)
 
         const defaultCustomPrimary = "#ff6680"
-        outline.info.color = procedureDefinePrototypeShellHex(defaultCustomPrimary)
+        outline.info.color =
+          procedureDefinePrototypeShellHex(defaultCustomPrimary)
         outline.info.defineCustomPrimary = defaultCustomPrimary
         outline.info.isDefaultColor = true
 
@@ -534,8 +541,15 @@ function parseLines(code, languages, options) {
 
           if (name === "cloud") {
             children.push(new Label("☁"))
-          } else if (name === "+" || name === "-" || name === "plus" || name === "minus") {
-            children.push(new Button(name === "plus" ? "+" : name === "minus" ? "-" : name))
+          } else if (
+            name === "+" ||
+            name === "-" ||
+            name === "plus" ||
+            name === "minus"
+          ) {
+            children.push(
+              new Button(name === "plus" ? "+" : name === "minus" ? "-" : name),
+            )
           } else {
             children.push(
               Object.prototype.hasOwnProperty.call(Icon.icons, name) ||
@@ -1086,8 +1100,7 @@ function recogniseStuff(scripts) {
           names: names,
         }
         if (outline.info.defineCustomPrimary || outline.info.color) {
-          info.color =
-            outline.info.defineCustomPrimary || outline.info.color
+          info.color = outline.info.defineCustomPrimary || outline.info.color
           if (outline.info.defineCustomPrimary) {
             info.defineCustomPrimary = outline.info.defineCustomPrimary
           }
@@ -1184,7 +1197,8 @@ function recogniseStuff(scripts) {
 
       if (
         block.isBlock &&
-        (block.info.id === "CONTROL_IF" || block.info.id === "CONTROL_IF_ELSE") &&
+        (block.info.id === "CONTROL_IF" ||
+          block.info.id === "CONTROL_IF_ELSE") &&
         !block.children.some(child => child.isButton) &&
         !block.info.forced
       ) {

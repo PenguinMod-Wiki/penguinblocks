@@ -600,4 +600,3 @@ export function blockName(block) {
   }
   return words.join(" ")
 }
-

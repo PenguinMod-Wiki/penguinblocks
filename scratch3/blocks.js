@@ -58,16 +58,19 @@ const octagonalShape = (w, h, props) =>
     ...props,
     path: [
       "M 20 0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "l 10 0",
       "l 10 10",
-      "v", h - 20,
+      "v",
+      h - 20,
       "l -10 10",
       "l -10 0",
       "H 20",
       "l -10 0",
       "l -10 -10",
-      "v", -(h - 20),
+      "v",
+      -(h - 20),
       "l 10 -10",
       "l 10 0",
       "z",
@@ -79,11 +82,29 @@ const roundShape = (w, h, props) => {
   return SVG.path({
     ...props,
     path: [
-      "M", r, 0,
-      "h", w - 2 * r,
-      "a", r, r, 0, 0, 1, 0, h,
-      "h", -(w - 2 * r),
-      "a", r, r, 0, 0, 1, 0, -h,
+      "M",
+      r,
+      0,
+      "h",
+      w - 2 * r,
+      "a",
+      r,
+      r,
+      0,
+      0,
+      1,
+      0,
+      h,
+      "h",
+      -(w - 2 * r),
+      "a",
+      r,
+      r,
+      0,
+      0,
+      1,
+      0,
+      -h,
       "z",
     ],
   })
@@ -95,9 +116,11 @@ const squareShape = (w, h, props) =>
     path: [
       "m 0,4",
       "A 4,4 0 0,1 4,0",
-      "H", w - 4,
+      "H",
+      w - 4,
       "a 4,4 0 0,1 4,4",
-      "v", h - 8,
+      "v",
+      h - 8,
       "a 4,4 0 0,1 -4,4",
       "H 4",
       "a 4,4 0 0,1 -4,-4",
@@ -111,13 +134,16 @@ const leafShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "a 20 20 0 0 1 20 20",
-      "l 0", h - 28,
+      "l 0",
+      h - 28,
       "a 8 8 0 0 1 -8 8",
       "H 20",
       "a 20 20 0 0 1 -20 -20",
-      "l 0", -(h - 28),
+      "l 0",
+      -(h - 28),
       "a 8 8 0 0 1 8 -8",
       "z",
     ],
@@ -129,7 +155,8 @@ const plusShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "l 0 0",
       "a 6 6 0 0 1 6 6",
       "a 6 6 0 0 0 6 6",
@@ -163,7 +190,8 @@ const ticketShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "h 20",
       "a 2 2 0 0 1 2 2",
       "v 9.3",
@@ -195,7 +223,8 @@ const bumpedShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "h 6.666666666666667",
       "a 1 1 0 0 1 0 20",
       "a 1 1 0 0 1 0 20",
@@ -215,7 +244,8 @@ const indentedShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "h 20",
       "l -20 20",
       "l 20 20",
@@ -235,7 +265,8 @@ const scrappedShape = (w, h, props) =>
     path: [
       "m 0,0",
       "m 20,0",
-      "H", w - 20,
+      "H",
+      w - 20,
       "h 20",
       "l -7.5 12.5",
       "l -5 1.25",
@@ -540,8 +571,7 @@ export class InputView {
     const isLiteral =
       (this.shape === "string" || this.shape === "number") && !isDefine
 
-    const customShape =
-      this.options.shapes && this.options.shapes[this.shape]
+    const customShape = this.options.shapes && this.options.shapes[this.shape]
 
     const h = (this.height = (customShape && customShape.height) || 32)
 
@@ -559,7 +589,13 @@ export class InputView {
             ? customShape.padding.left
             : this.shape === "octagonal" || this.shape === "round"
               ? 16
-              : this.shape === "leaf" || this.shape === "plus" || this.shape === "ticket" || this.shape === "bumped" || this.shape === "indented" || this.shape === "scrapped" || this.shape === "arrow"
+              : this.shape === "leaf" ||
+                  this.shape === "plus" ||
+                  this.shape === "ticket" ||
+                  this.shape === "bumped" ||
+                  this.shape === "indented" ||
+                  this.shape === "scrapped" ||
+                  this.shape === "arrow"
                 ? 24
                 : 11
         const pr =
@@ -579,7 +615,13 @@ export class InputView {
             ? customShape.padding.left
             : this.shape === "octagonal" || this.shape === "round"
               ? 16
-              : this.shape === "leaf" || this.shape === "plus" || this.shape === "ticket" || this.shape === "bumped" || this.shape === "indented" || this.shape === "scrapped" || this.shape === "arrow"
+              : this.shape === "leaf" ||
+                  this.shape === "plus" ||
+                  this.shape === "ticket" ||
+                  this.shape === "bumped" ||
+                  this.shape === "indented" ||
+                  this.shape === "scrapped" ||
+                  this.shape === "arrow"
                 ? 24
                 : this.label.width >= 18
                   ? 11
@@ -641,7 +683,10 @@ export class InputView {
           fill: "#fff",
           stroke: "rgba(0, 0, 0, 0.2)",
         })
-      } else if (this.shape === "dropdown" || this.shape === "number-dropdown") {
+      } else if (
+        this.shape === "dropdown" ||
+        this.shape === "number-dropdown"
+      ) {
         SVG.setProps(el, {
           fill: "rgba(0, 0, 0, 0.2)",
           stroke: "rgba(0, 0, 0, 0.2)",
@@ -706,8 +751,7 @@ class BlockView {
     this.comment = this.comment ? newView(this.comment, options) : null
     this.isRound =
       this.isReporter ||
-      (this.info.shape === "outline" &&
-        this.info.outlineShape === "reporter")
+      (this.info.shape === "outline" && this.info.outlineShape === "reporter")
 
     this.info = { ...block.info }
 
@@ -898,7 +942,15 @@ class BlockView {
     if (shape === "octagonal" || shape === "round") {
       return 16
     }
-    if (shape === "leaf" || shape === "plus" || shape === "ticket" || shape === "bumped" || shape === "indented" || shape === "scrapped" || shape === "arrow") {
+    if (
+      shape === "leaf" ||
+      shape === "plus" ||
+      shape === "ticket" ||
+      shape === "bumped" ||
+      shape === "indented" ||
+      shape === "scrapped" ||
+      shape === "arrow"
+    ) {
       return 24
     }
 
@@ -955,9 +1007,7 @@ class BlockView {
   draw(iconStyle) {
     const isDefine = this.info.shape === "define-hat"
     const outlineShape =
-      this.info.shape === "outline"
-        ? this.info.outlineShape || "stack"
-        : null
+      this.info.shape === "outline" ? this.info.outlineShape || "stack" : null
     const outlineUsesCommandLayout =
       this.isOutline &&
       outlineShape !== "reporter" &&
@@ -1103,15 +1153,17 @@ class BlockView {
     )
 
     // Center the label text inside small reporters.
-    if (
-      (this.isReporter || outlineShape === "reporter") &&
-      !this.hasScript
-    ) {
+    if ((this.isReporter || outlineShape === "reporter") && !this.hasScript) {
       padLeft += (innerWidth - originalInnerWidth) / 2
     }
 
     const lastLine = lines[lines.length - 1]
-    if (this.hasScript && lastLine && !lastLine.isScript && lastLine.children.some(child => child.isButton)) {
+    if (
+      this.hasScript &&
+      lastLine &&
+      !lastLine.isScript &&
+      lastLine.children.some(child => child.isButton)
+    ) {
       y += 16
     }
     this.height = y

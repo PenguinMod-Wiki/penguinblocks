@@ -315,7 +315,8 @@ export default class SVG {
         p.push(SVG.getArm(w, y, shape))
       }
 
-      const lastLineHasButton = isLast && lines[i + 1].children.some(child => child.isButton)
+      const lastLineHasButton =
+        isLast && lines[i + 1].children.some(child => child.isButton)
       const hasNotch = !(isLast && isFinal) || lastLineHasButton
       const inset = isLast ? 0 : 16
       let h = lines[i + 1].height

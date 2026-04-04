@@ -10,4 +10,3 @@ export function init(window) {
 
 export const makeStyle = style.makeStyle
 export { newView } from "./blocks.js"
-

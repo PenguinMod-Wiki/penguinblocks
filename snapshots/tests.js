@@ -1305,4 +1305,3 @@ Wenn Kraftsensor [gedrückt v]
 `,
   "de",
 )
-

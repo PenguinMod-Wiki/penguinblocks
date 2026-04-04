@@ -68,4 +68,3 @@ class Renderer {
 }
 
 export default new Renderer()
-

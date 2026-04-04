@@ -226,4 +226,3 @@ export default common +
   create("", originalStyle) +
   create(".penguinblocks-style-scratch3-high-contrast", highContrastStyle) +
   commonOverride
-

@@ -378,8 +378,7 @@ class BlockView {
     }
     if (
       this.isReporter ||
-      (this.info.shape === "outline" &&
-        this.info.outlineShape === "reporter")
+      (this.info.shape === "outline" && this.info.outlineShape === "reporter")
     ) {
       return (child.isInput && child.isRound) ||
         ((child.isReporter || child.isBoolean) && !child.hasScript)
@@ -504,13 +503,9 @@ class BlockView {
     pushLine(true)
 
     const outlineOs =
-      this.info.shape === "outline"
-        ? this.info.outlineShape || "stack"
-        : null
+      this.info.shape === "outline" ? this.info.outlineShape || "stack" : null
     const outlineStackLike =
-      this.isOutline &&
-      outlineOs !== "reporter" &&
-      outlineOs !== "boolean"
+      this.isOutline && outlineOs !== "reporter" && outlineOs !== "boolean"
 
     innerWidth = Math.max(
       innerWidth + px * 2,
@@ -891,4 +886,3 @@ const viewFor = node => {
 }
 
 export const newView = (node, options) => new (viewFor(node))(node, options)
-

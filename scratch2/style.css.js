@@ -124,4 +124,3 @@ export default `
   stroke-width: 3px;
 }
 `
-

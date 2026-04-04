@@ -44,28 +44,25 @@ export default class Style {
           SVG.el("symbol", {
             id: "sb3-blueFlag",
             viewBox: "0 0 69.43514 81.85361",
-            preserveAspectRatio: "xMidYMid meet"
+            preserveAspectRatio: "xMidYMid meet",
           }),
           [
-            SVG.withChildren(
-              SVG.el("defs"),
-              [
-                SVG.withChildren(
-                  SVG.el("linearGradient", {
-                    id: "blueFlag-color-1",
-                    gradientUnits: "userSpaceOnUse",
-                    y2: "191.84137",
-                    x2: "240.07404",
-                    y1: "141.15092",
-                    x1: "240.07404",
-                  }),
-                  [
-                    SVG.el("stop", { "stop-color": "#00a5ff", offset: "0" }),
-                    SVG.el("stop", { "stop-color": "#0065ff", offset: "1" }),
-                  ]
-                ),
-              ]
-            ),
+            SVG.withChildren(SVG.el("defs"), [
+              SVG.withChildren(
+                SVG.el("linearGradient", {
+                  id: "blueFlag-color-1",
+                  gradientUnits: "userSpaceOnUse",
+                  y2: "191.84137",
+                  x2: "240.07404",
+                  y1: "141.15092",
+                  x1: "240.07404",
+                }),
+                [
+                  SVG.el("stop", { "stop-color": "#00a5ff", offset: "0" }),
+                  SVG.el("stop", { "stop-color": "#0065ff", offset: "1" }),
+                ],
+              ),
+            ]),
             SVG.withChildren(
               SVG.el("g", { transform: "translate(-204.78243,-139.49547)" }),
               [
@@ -84,13 +81,13 @@ export default class Style {
                       fill: "none",
                       d: "M207.28244,218.84908v-76.85361",
                     }),
-                  ]
+                  ],
                 ),
-              ]
+              ],
             ),
-          ]
+          ],
         ),
-        {}
+        {},
       ),
 
       SVG.setProps(
@@ -98,28 +95,25 @@ export default class Style {
           SVG.el("symbol", {
             id: "sb3-stopSign",
             viewBox: "0 0 80.48145 80.48145",
-            preserveAspectRatio: "xMidYMid meet"
+            preserveAspectRatio: "xMidYMid meet",
           }),
           [
-            SVG.withChildren(
-              SVG.el("defs"),
-              [
-                SVG.withChildren(
-                  SVG.el("linearGradient", {
-                    id: "stop-color-1",
-                    gradientUnits: "userSpaceOnUse",
-                    x1: "240.00001",
-                    y1: "141.25928",
-                    x2: "240.00001",
-                    y2: "218.74073"
-                  }),
-                  [
-                    SVG.el("stop", { "stop-color": "#ff2484", offset: "0" }),
-                    SVG.el("stop", { "stop-color": "#c40056", offset: "1" })
-                  ]
-                ),
-              ]
-            ),
+            SVG.withChildren(SVG.el("defs"), [
+              SVG.withChildren(
+                SVG.el("linearGradient", {
+                  id: "stop-color-1",
+                  gradientUnits: "userSpaceOnUse",
+                  x1: "240.00001",
+                  y1: "141.25928",
+                  x2: "240.00001",
+                  y2: "218.74073",
+                }),
+                [
+                  SVG.el("stop", { "stop-color": "#ff2484", offset: "0" }),
+                  SVG.el("stop", { "stop-color": "#c40056", offset: "1" }),
+                ],
+              ),
+            ]),
             SVG.withChildren(
               SVG.el("g", { transform: "translate(-199.75928,-139.75928)" }),
               [
@@ -127,19 +121,19 @@ export default class Style {
                   SVG.el("g", {
                     fill: "url(#stop-color-1)",
                     stroke: "#780034",
-                    "stroke-width": "3"
+                    "stroke-width": "3",
                   }),
                   [
                     SVG.el("path", {
-                      d: "M223.95307,218.74073l-22.69379,-22.69379v-32.09387l22.69379,-22.69379h32.09387l22.69379,22.69379v32.09387l-22.69379,22.69379z"
-                    })
-                  ]
+                      d: "M223.95307,218.74073l-22.69379,-22.69379v-32.09387l22.69379,-22.69379h32.09387l22.69379,22.69379v32.09387l-22.69379,22.69379z",
+                    }),
+                  ],
                 ),
-              ]
+              ],
             ),
-          ]
+          ],
         ),
-        {}
+        {},
       ),
 
       SVG.setProps(
@@ -147,61 +141,64 @@ export default class Style {
           SVG.el("symbol", {
             id: "sb3-pause",
             viewBox: "0 0 73.77982 80.52076",
-            preserveAspectRatio: "xMidYMid meet"
+            preserveAspectRatio: "xMidYMid meet",
           }),
           [
-            SVG.withChildren(
-              SVG.el("defs"),
-              [
-                SVG.withChildren(
-                  SVG.el("linearGradient", {
-                    id: "pause-color-1",
-                    gradientUnits: "userSpaceOnUse",
-                    y2: "218.76038",
-                    x2: "218.00326",
-                    y1: "141.23962",
-                    x1: "218.00326"
-                  }),
-                  [
-                    SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
-                    SVG.el("stop", { "stop-color": "#ffb200", offset: "1" })
-                  ]
-                ),
-                SVG.withChildren(
-                  SVG.el("linearGradient", {
-                    id: "pause-color-2",
-                    gradientUnits: "userSpaceOnUse",
-                    y2: "218.76038",
-                    x2: "261.99673",
-                    y1: "141.23962",
-                    x1: "261.99673"
-                  }),
-                  [
-                    SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
-                    SVG.el("stop", { "stop-color": "#ffb200", offset: "1" })
-                  ]
-                ),
-              ]
-            ),
+            SVG.withChildren(SVG.el("defs"), [
+              SVG.withChildren(
+                SVG.el("linearGradient", {
+                  id: "pause-color-1",
+                  gradientUnits: "userSpaceOnUse",
+                  y2: "218.76038",
+                  x2: "218.00326",
+                  y1: "141.23962",
+                  x1: "218.00326",
+                }),
+                [
+                  SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
+                  SVG.el("stop", { "stop-color": "#ffb200", offset: "1" }),
+                ],
+              ),
+              SVG.withChildren(
+                SVG.el("linearGradient", {
+                  id: "pause-color-2",
+                  gradientUnits: "userSpaceOnUse",
+                  y2: "218.76038",
+                  x2: "261.99673",
+                  y1: "141.23962",
+                  x1: "261.99673",
+                }),
+                [
+                  SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
+                  SVG.el("stop", { "stop-color": "#ffb200", offset: "1" }),
+                ],
+              ),
+            ]),
             SVG.withChildren(
               SVG.el("g", { transform: "translate(-203.11009,-139.73962)" }),
               [
                 SVG.withChildren(
                   SVG.el("g", {
-                    "stroke": "#9b4e00",
+                    stroke: "#9b4e00",
                     "stroke-width": "3",
-                    "fill-rule": "nonzero"
+                    "fill-rule": "nonzero",
                   }),
                   [
-                    SVG.el("path", { fill: "url(#pause-color-1)", d: "M204.61009,218.76038v-77.52076h26.78635v77.52076z" }),
-                    SVG.el("path", { fill: "url(#pause-color-2)", d: "M248.60356,218.76038v-77.52076h26.78635v77.52076z" })
-                  ]
+                    SVG.el("path", {
+                      fill: "url(#pause-color-1)",
+                      d: "M204.61009,218.76038v-77.52076h26.78635v77.52076z",
+                    }),
+                    SVG.el("path", {
+                      fill: "url(#pause-color-2)",
+                      d: "M248.60356,218.76038v-77.52076h26.78635v77.52076z",
+                    }),
+                  ],
                 ),
-              ]
+              ],
             ),
-          ]
+          ],
         ),
-        {}
+        {},
       ),
 
       SVG.setProps(
@@ -209,28 +206,25 @@ export default class Style {
           SVG.el("symbol", {
             id: "sb3-play",
             viewBox: "0 0 66.22807 81.50462",
-            preserveAspectRatio: "xMidYMid meet"
+            preserveAspectRatio: "xMidYMid meet",
           }),
           [
-            SVG.withChildren(
-              SVG.el("defs"),
-              [
-                SVG.withChildren(
-                  SVG.el("linearGradient", {
-                    id: "play-color-1",
-                    gradientUnits: "userSpaceOnUse",
-                    x1: "244.70092",
-                    y1: "141.93193",
-                    x2: "244.70092",
-                    y2: "218.06809"
-                  }),
-                  [
-                    SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
-                    SVG.el("stop", { "stop-color": "#ffb200", offset: "1" })
-                  ]
-                ),
-              ]
-            ),
+            SVG.withChildren(SVG.el("defs"), [
+              SVG.withChildren(
+                SVG.el("linearGradient", {
+                  id: "play-color-1",
+                  gradientUnits: "userSpaceOnUse",
+                  x1: "244.70092",
+                  y1: "141.93193",
+                  x2: "244.70092",
+                  y2: "218.06809",
+                }),
+                [
+                  SVG.el("stop", { "stop-color": "#ffe100", offset: "0" }),
+                  SVG.el("stop", { "stop-color": "#ffb200", offset: "1" }),
+                ],
+              ),
+            ]),
             SVG.withChildren(
               SVG.el("g", { transform: "translate(-212.268,-139.2477)" }),
               [
@@ -242,19 +236,19 @@ export default class Style {
                     "stroke-width": "3",
                     "stroke-linecap": "butt",
                     "stroke-linejoin": "miter",
-                    "stroke-miterlimit": "10"
+                    "stroke-miterlimit": "10",
                   }),
                   [
                     SVG.el("path", {
-                      d: "M213.768,141.93193l61.86583,38.06808l-61.86583,38.06808z"
-                    })
-                  ]
+                      d: "M213.768,141.93193l61.86583,38.06808l-61.86583,38.06808z",
+                    }),
+                  ],
                 ),
-              ]
+              ],
             ),
-          ]
+          ],
         ),
-        {}
+        {},
       ),
 
       SVG.el("path", {
@@ -1085,4 +1079,3 @@ export default class Style {
     return "400 12pt Helvetica Neue, Helvetica, sans-serif"
   }
 }
-

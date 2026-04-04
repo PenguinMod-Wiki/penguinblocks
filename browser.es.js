@@ -6,4 +6,3 @@ const penguinblocks = init(window)
 penguinblocks.appendStyles()
 
 export default penguinblocks
-
