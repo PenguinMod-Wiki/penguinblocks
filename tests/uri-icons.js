@@ -16,7 +16,9 @@ test("uri icon parsing", () => {
   const httpIcon = httpBlock.children[0]
   expect(httpIcon.isIcon).toBe(true)
   expect(httpIcon.name).toBe("https://extensions.turbowarp.org/dango.png")
-  expect(httpDoc.stringify()).toContain("@(https://extensions.turbowarp.org/dango.png)")
+  expect(httpDoc.stringify()).toContain(
+    "@(https://extensions.turbowarp.org/dango.png)",
+  )
 })
 
 test("reporters with uri icons", () => {
