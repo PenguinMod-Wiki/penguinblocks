@@ -291,6 +291,7 @@ class BlockView {
       "c-block": SVG.stackRect,
       "if-block": SVG.stackRect,
       celse: SVG.stackRect,
+      "celse-if": SVG.stackRect,
       cend: SVG.stackRect,
 
       cap: SVG.capRect,
