@@ -756,7 +756,7 @@ class CheckboxView {
       class: "sb-input sb-input-boolean",
     })
 
-    const mark = SVG.path({
+    const mark = SVG.el("path", {
       d: this.value ? "M 3 6 L 5 8 L 9 3" : "",
       fill: "none",
       stroke: "#fff",
@@ -793,7 +793,7 @@ class ButtonView {
     })
 
     const isPlus = this.name === "+"
-    const mark = SVG.path({
+    const mark = SVG.el("path", {
       d: isPlus ? "M 6 3 L 6 9 M 3 6 L 9 6" : "M 3 6 L 9 6",
       fill: "none",
       stroke: "#fff",

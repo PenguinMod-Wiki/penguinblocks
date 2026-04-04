@@ -66,11 +66,19 @@ export default class SVG {
   }
 
   static polygon(props) {
-    return SVG.el("polygon", { ...props, points: props.points.join(" ") })
+    const { points, ...rest } = props
+    return SVG.el("polygon", {
+      ...rest,
+      points: Array.isArray(points) ? points.join(" ") : points,
+    })
   }
 
   static path(props) {
-    return SVG.el("path", { ...props, path: null, d: props.path.join(" ") })
+    const { path, ...rest } = props
+    return SVG.el("path", {
+      ...rest,
+      d: Array.isArray(path) ? path.join(" ") : (path || props.d),
+    })
   }
 
   static text(x, y, content, props) {
