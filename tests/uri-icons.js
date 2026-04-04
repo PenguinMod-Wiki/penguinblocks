@@ -1,7 +1,8 @@
 import { parse } from "../index.js"
 
 test("uri icon parsing", () => {
-  const code = "@(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==)"
+  const code =
+    "@(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==)"
   const doc = parse(code)
   const block = doc.scripts[0].blocks[0]
   const icon = block.children[0]
