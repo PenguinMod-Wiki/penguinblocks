@@ -3,6 +3,8 @@ import {
   Icon,
   Input,
   Block,
+  Checkbox,
+  Button,
   Comment,
   Glow,
   Script,
@@ -730,6 +732,79 @@ class ScriptView {
   }
 }
 
+class CheckboxView {
+  constructor(node) {
+    this.value = node.value
+    this.width = 12
+    this.height = 12
+    this.x = 0
+  }
+
+  get isCheckbox() {
+    return true
+  }
+
+  measure() {}
+
+  draw(parent) {
+    const w = 12
+    const h = 12
+
+    const bg = SVG.rect(w, h, {
+      fill: "rgba(0, 0, 0, 0.2)",
+      stroke: "rgba(0, 0, 0, 0)",
+      class: "sb-input sb-input-boolean",
+    })
+
+    const mark = SVG.path({
+      d: this.value ? "M 3 6 L 5 8 L 9 3" : "",
+      fill: "none",
+      stroke: "#fff",
+      "stroke-width": 2,
+    })
+
+    this.el = SVG.group([bg, mark])
+    return this.el
+  }
+}
+
+class ButtonView {
+  constructor(node) {
+    this.name = node.name
+    this.width = 12
+    this.height = 12
+    this.x = 0
+  }
+
+  get isButton() {
+    return true
+  }
+
+  measure() {}
+
+  draw(parent) {
+    const w = 12
+    const h = 12
+
+    const bg = SVG.rect(w, h, {
+      fill: "rgba(0, 0, 0, 0.2)",
+      stroke: "rgba(0, 0, 0, 0)",
+      class: "sb-input",
+    })
+
+    const isPlus = this.name === "+"
+    const mark = SVG.path({
+      d: isPlus ? "M 6 3 L 6 9 M 3 6 L 9 6" : "M 3 6 L 9 6",
+      fill: "none",
+      stroke: "#fff",
+      "stroke-width": 2,
+    })
+
+    this.el = SVG.group([bg, mark])
+    return this.el
+  }
+}
+
 class DocumentView {
   constructor(doc, options) {
     Object.assign(this, doc)
@@ -872,6 +947,10 @@ const viewFor = node => {
       return InputView
     case Block:
       return BlockView
+    case Checkbox:
+      return CheckboxView
+    case Button:
+      return ButtonView
     case Comment:
       return CommentView
     case Glow:
