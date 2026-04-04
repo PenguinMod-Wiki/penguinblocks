@@ -755,7 +755,17 @@ class BlockView {
 
     this.info = { ...block.info }
 
-    this.children = block.children.map(node => newView(node, options))
+    const children = []
+    for (const node of block.children) {
+      const view = newView(node, options)
+      const last = children[children.length - 1]
+      if (last && last.isLabel && view.isLabel && last.cls === view.cls) {
+        last.value += " " + view.value
+      } else {
+        children.push(view)
+      }
+    }
+    this.children = children
 
     const isCommand = this.info.shape === "stack" || this.info.shape === "hat"
 
@@ -996,8 +1006,8 @@ class BlockView {
     if (a.isLine) {
       return 8
     }
-    // Consecutive labels should be rendered as a single text element.
-    // For now, manually offset by the size of one space
+    // Consecutive labels are now combined into a single text element in the constructor.
+    // If we're here, it means they were NOT combined (maybe different classes).
     if (a.isLabel && b.isLabel) {
       return 8
     }
@@ -1040,7 +1050,22 @@ class BlockView {
     let scriptWidth = 0
     let line = new Line(y)
     const pushLine = () => {
-      line.height += pt + pb
+      if (lines.length === 0) {
+        line.height += pt + pb
+      } else {
+        if (
+          this.info.shape === "if-block" ||
+          this.info.shape === "celse" ||
+          this.info.shape === "celse-if"
+        ) {
+          line.height += pt + pb
+        } else if (this.isReporter || this.isBoolean) {
+          line.height = 32
+        } else {
+          line.height -= 11
+          line.y -= 2
+        }
+      }
       y += line.height
       lines.push(line)
     }
@@ -1078,11 +1103,18 @@ class BlockView {
       ) {
         this.hasScript = true
         pushLine()
-        child.y = y - 1
-        lines.push(child)
-        scriptWidth = Math.max(scriptWidth, Math.max(1, child.width))
-        child.height = Math.max(29, child.height + 3) - 2
-        y += child.height
+        if (this.isReporter || this.isBoolean) {
+          child.y = y
+          lines.push(child)
+          scriptWidth = Math.max(scriptWidth, Math.max(1, child.width))
+          y += child.height
+        } else {
+          child.y = y - 1
+          lines.push(child)
+          scriptWidth = Math.max(scriptWidth, Math.max(1, child.width))
+          child.height = Math.max(29, child.height + 3) - 2
+          y += child.height
+        }
         line = new Line(y)
         previousChild = null
       } else if (child.isArrow) {

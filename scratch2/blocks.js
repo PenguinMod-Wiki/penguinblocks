@@ -246,7 +246,17 @@ class InputView {
 class BlockView {
   constructor(block, options) {
     Object.assign(this, block)
-    this.children = block.children.map(node => newView(node, options))
+    const children = []
+    for (const node of block.children) {
+      const view = newView(node, options)
+      const last = children[children.length - 1]
+      if (last && last.isLabel && view.isLabel && last.cls === view.cls) {
+        last.value += " " + view.value
+      } else {
+        children.push(view)
+      }
+    }
+    this.children = children
     this.comment = this.comment ? newView(this.comment, options) : null
 
     if (

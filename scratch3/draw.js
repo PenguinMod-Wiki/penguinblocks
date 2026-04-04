@@ -315,9 +315,10 @@ export default class SVG {
       const isLast = i + 2 === lines.length
 
       const line = lines[i]
-      y += line.height - 3
+      const isReporter = shape === "reporter" || shape === "boolean"
+      y += line.height - (isReporter ? 0 : 3)
 
-      if (line.isFinal) {
+      if (line.isFinal || isReporter) {
         p.push(SVG.getArmNoNotch(w, y, shape))
       } else {
         p.push(SVG.getArm(w, y, shape))
@@ -325,13 +326,14 @@ export default class SVG {
 
       const lastLineHasButton =
         isLast && lines[i + 1].children.some(child => child.isButton)
-      const hasNotch = !(isLast && isFinal) || lastLineHasButton
+      const hasNotch =
+        (!(isLast && isFinal) || lastLineHasButton) && !isReporter
       const inset = isLast ? 0 : 16
       let h = lines[i + 1].height
       if (lastLineHasButton) {
         h += 16
       }
-      y += h + 3
+      y += h + (isReporter ? 0 : 3)
       p.push(SVG.getRightAndBottom(w, y, hasNotch, inset, shape))
     }
     p.push("Z")
