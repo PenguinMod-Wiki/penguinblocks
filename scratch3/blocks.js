@@ -1109,7 +1109,7 @@ class BlockView {
     }
 
     const lastLine = lines[lines.length - 1]
-    if (lastLine && !lastLine.isScript && lastLine.children.some(child => child.isButton)) {
+    if (this.hasScript && lastLine && !lastLine.isScript && lastLine.children.some(child => child.isButton)) {
       y += 16
     }
     this.height = y
