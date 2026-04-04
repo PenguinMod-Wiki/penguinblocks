@@ -773,6 +773,7 @@ class BlockView {
       "c-block": SVG.stackRect,
       "if-block": SVG.ifElseRect,
       celse: SVG.stackRect,
+      celseif: SVG.stackRect,
       cend: SVG.stackRect,
 
       cap: SVG.capRect,
@@ -986,8 +987,9 @@ class BlockView {
     let innerWidth = 0
     let scriptWidth = 0
     let line = new Line(y)
+    line.hasBooleanInput = false
     const pushLine = () => {
-      if (lines.length === 0) {
+      if (lines.length === 0 || line.hasBooleanInput) {
         line.height += pt + pb
       } else {
         line.height -= 11
@@ -1036,6 +1038,7 @@ class BlockView {
         child.height = Math.max(29, child.height + 3) - 2
         y += child.height
         line = new Line(y)
+        line.hasBooleanInput = false
         previousChild = null
       } else if (child.isArrow) {
         line.children.push(child)
@@ -1073,6 +1076,9 @@ class BlockView {
         innerWidth = Math.max(innerWidth, line.width)
         if (!child.isLabel) {
           line.height = Math.max(line.height, child.height)
+        }
+        if (child.isBoolean || child.isCheckbox) {
+          line.hasBooleanInput = true
         }
         line.children.push(child)
         previousChild = child
