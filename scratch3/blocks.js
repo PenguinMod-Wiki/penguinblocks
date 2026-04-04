@@ -905,7 +905,8 @@ class BlockView {
       hat: [24, 8],
       cat: [24, 8],
       "define-hat": [20, 16],
-      "celse-if": [13, 0],
+      "celse-if": [4, 4],
+      celse: [4, 4],
       octagonal: [4, 4],
       round: [4, 4],
       square: [4, 4],
@@ -998,7 +999,7 @@ class BlockView {
     // Consecutive labels should be rendered as a single text element.
     // For now, manually offset by the size of one space
     if (a.isLabel && b.isLabel) {
-      return 4.447998046875
+      return 8
     }
 
     return 8 // default: 2 units
@@ -1039,12 +1040,7 @@ class BlockView {
     let scriptWidth = 0
     let line = new Line(y)
     const pushLine = () => {
-      if (lines.length === 0) {
-        line.height += pt + pb
-      } else {
-        line.height += pt + pb - 11
-        line.y -= 2
-      }
+      line.height += pt + pb
       y += line.height
       lines.push(line)
     }

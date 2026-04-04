@@ -25,7 +25,6 @@ end
   const op = script.blocks[0]
   expect(op.info.id).toBe("CONTROL_IF")
 
-  // The else-if should be swallowed into children
   expect(op.children.some(c => c.value === "else" && c.isLabel)).toBe(true)
   expect(op.children.some(c => c.value === "if" && c.isLabel)).toBe(true)
   expect(doc.stringify()).toContain("if <true> then")
