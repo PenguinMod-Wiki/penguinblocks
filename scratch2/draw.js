@@ -82,7 +82,7 @@ export default class SVG {
     const { path, ...rest } = props
     return SVG.el("path", {
       ...rest,
-      d: Array.isArray(path) ? path.join(" ") : (path || props.d),
+      d: Array.isArray(path) ? path.join(" ") : path || props.d,
     })
   }
 
