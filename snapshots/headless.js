@@ -40,7 +40,7 @@ class Renderer {
     )
     this.page.on("requestfailed", request => {
       console.error(
-      `Request failed: ${request.url()} - ${request.failure().errorText}`
+        `Request failed: ${request.url()} - ${request.failure().errorText}`,
       )
     })
   }
