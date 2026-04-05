@@ -203,6 +203,20 @@ export default class SVG {
   }
 
   static getArmNoNotch(w, armTop, shape) {
+    if (shape === "reporter" || shape === "boolean") {
+      return `L 16 ${armTop - 4}
+        a 4 4 0 0 0 4 4
+        H 28
+        c 2 0 3 1 4 2
+        l 4 4
+        c 1 1 2 2 4 2
+        h 12
+        c 2 0 3 -1 4 -2
+        l 4 -4
+        c 1 -1 2 -2 4 -2
+        L ${w - 4} ${armTop}
+        a 4 4 0 0 1 4 4`
+    }
     return `L 16 ${armTop - 4}
       a 4 4 0 0 0 4 4
       L 28 ${armTop} L ${w - 4} ${armTop}
@@ -318,7 +332,7 @@ export default class SVG {
       const isReporter = shape === "reporter" || shape === "boolean"
       y += line.height - (isReporter ? 0 : 3)
 
-      if (line.isFinal || isReporter) {
+      if (isReporter) {
         p.push(SVG.getArmNoNotch(w, y, shape))
       } else {
         p.push(SVG.getArm(w, y, shape))

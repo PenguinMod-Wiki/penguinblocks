@@ -1424,10 +1424,14 @@ class ScriptView {
     }
     const lastBlock = this.blocks[this.blocks.length - 1]
     this.height = y + 1
-    if (!inside && !this.isFinal) {
-      this.height += lastBlock.hasPuzzle ? 8 : 0
+
+    if (this.blocks.length === 0) {
+      this.height = 32
     }
-    if (!inside && lastBlock.isGlow) {
+    if (!inside && !this.isFinal) {
+      this.height += lastBlock ? lastBlock.hasPuzzle ? 8 : 0 : 8
+    }
+    if (!inside && lastBlock && lastBlock.isGlow) {
       this.height += 7 // TODO unbreak this
     }
     return SVG.group(children)

@@ -458,7 +458,7 @@ export class Script {
   }
 
   stringify() {
-    return this.blocks
+    const content = this.blocks
       .map(block => {
         let line = block.stringify()
         if (block.comment) {
@@ -481,6 +481,12 @@ export class Script {
         return line
       })
       .join("\n")
+    
+    if (this.isEmpty && this.isEmbedded) {
+      return "{}"
+    }
+    
+    return content
   }
 
   translate(lang) {

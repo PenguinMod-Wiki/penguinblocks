@@ -809,7 +809,12 @@ function parseLines(code, languages, options) {
     }
     if (!sawNL) {
       assert(blocks.length <= 1)
-      return blocks.length ? blocks[0] : makeBlock("stack", [])
+      if (blocks.length) {
+        return blocks[0]
+      }
+      const script = new Script([])
+      script.isEmbedded = true
+      return script
     }
     return new Script(blocks)
   }
