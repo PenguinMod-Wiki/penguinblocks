@@ -6,4 +6,7 @@ node_modules
 npm-debug.log
 src/_cache
 tests/*.svg
+snapshots/scratch2/
+snapshots/scratch3/
+snapshots/scratch3-high-contrast/
 
