@@ -236,3 +236,31 @@ my custom shape block::my-custom-shape
 ```
 
 For more info on how PenguinMod uses custom block shapes in extensions, see the <a href="https://docs.penguinmod.com/development/extensions/api/blocks/custom-block-shape/" target="_blank">PenguinMod Custom Block Shape API</a>.
+
+## Custom Categories / Extensions
+You can register custom categories (which act like extensions) via the `categories` option. This allows extensions to seamlessly adopt global colors and custom side-icons without cluttering the syntax.
+
+### Usage
+Provide a `categories` object in the options for `renderMatching`, with a map of extension names to configuration objects.
+
+An extension configuration object accepts the following properties:
+* `icon` (optional, string): The registered icon ID to use on the left side of the block.
+* `color` (optional, string): The hex color to apply. Defaults to the standard `extension` block color if not provided.
+
+```javascript
+penguinblocks.renderMatching('pre.blocks', {
+  style: 'scratch3',
+  categories: {
+    'myCategory': {
+      color: '#ff4c4c',
+      icon: 'my-custom-icon' // note: the icon string must be defined in 'icons'
+    }
+  }
+});
+```
+
+When authoring block code, simply append `::myCategory` to map the block to your extension:
+
+```
+new block for this extension :: myCategory
+```

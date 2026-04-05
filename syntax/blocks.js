@@ -534,6 +534,9 @@ export function applyOverrides(info, overrides, options) {
     } else if (overrideCategories.includes(name)) {
       info.category = name
       info.categoryIsDefault = false
+    } else if (options && options.categories && options.categories[name]) {
+      info.category = name
+      info.categoryIsDefault = false
     } else if (
       overrideShapes.includes(name) ||
       (options && options.shapes && options.shapes[name])

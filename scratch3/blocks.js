@@ -786,7 +786,28 @@ class BlockView {
       this.info.category,
     )
 
-    if (willGetVanillaIcon) {
+    const categoriesOptions = options.categories || {}
+    const hasCustomCategory = Object.prototype.hasOwnProperty.call(
+      categoriesOptions,
+      this.info.category,
+    )
+    const customCategory = hasCustomCategory
+      ? categoriesOptions[this.info.category]
+      : null
+
+    if (customCategory) {
+      if (customCategory.color) {
+        this.info.color = customCategory.color
+      } else {
+        this.info.category = "extension"
+      }
+      if (customCategory.icon) {
+        const icon = new IconView({ name: customCategory.icon }, options)
+        icon.width = 52
+        this.children.unshift(new LineView())
+        this.children.unshift(icon)
+      }
+    } else if (willGetVanillaIcon) {
       const icon = new IconView({ name: this.info.category + "Block" }, options)
       icon.width = 52
       this.children.unshift(new LineView())
@@ -1432,7 +1453,7 @@ class DocumentView {
     this.el = null
     this.defs = null
     this.scale = options.scale
-    this.iconStyle = options.style.replace("scratch3-", "")
+    this.iconStyle = options.style ? options.style.replace("scratch3-", "") : ""
     this.customIcons = options.icons || {}
   }
 

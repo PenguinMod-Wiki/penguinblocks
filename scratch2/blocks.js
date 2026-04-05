@@ -265,7 +265,22 @@ class BlockView {
       // handle aliases first
       this.info.category = aliasExtensions[this.info.category]
     }
-    if (
+    const categoriesOptions = options.categories || {}
+    const hasCustomCategory = Object.prototype.hasOwnProperty.call(
+      categoriesOptions,
+      this.info.category,
+    )
+    const customCategory = hasCustomCategory
+      ? categoriesOptions[this.info.category]
+      : null
+
+    if (customCategory) {
+      if (customCategory.color) {
+        this.info.color = customCategory.color
+      } else {
+        this.info.category = "extension"
+      }
+    } else if (
       Object.prototype.hasOwnProperty.call(movedExtensions, this.info.category)
     ) {
       this.info.category = movedExtensions[this.info.category]
