@@ -9,33 +9,37 @@ describe("Custom categories options", () => {
       categories: {
         myCategory: {
           color: "#ff0000",
-          icon: "greenFlag"
-        }
-      }
+          icon: "greenFlag",
+        },
+      },
     }
     const doc = parse(code, options)
 
     const view = newView(doc, options)
     const scriptView = view.scripts[0]
     const blockView = scriptView.blocks[0]
-    
+
     expect(blockView.info.color).toBe("#ff0000")
-    expect(blockView.children.some(child => child.isIcon && child.name === "greenFlag")).toBe(true)
+    expect(
+      blockView.children.some(
+        child => child.isIcon && child.name === "greenFlag",
+      ),
+    ).toBe(true)
   })
 
   it("default to extension color if no color provided in Scratch 3", () => {
     const code = "my test block :: myCategory"
     const options = {
       categories: {
-        myCategory: {}
-      }
+        myCategory: {},
+      },
     }
     const doc = parse(code, options)
 
     const view = newView(doc, options)
     const scriptView = view.scripts[0]
     const blockView = scriptView.blocks[0]
-    
+
     expect(blockView.info.category).toBe("extension")
   })
 
@@ -44,16 +48,16 @@ describe("Custom categories options", () => {
     const options = {
       categories: {
         myCategory: {
-          color: "#ff0000"
-        }
-      }
+          color: "#ff0000",
+        },
+      },
     }
     const doc = parse(code, options)
 
     const view = newView2(doc, options)
     const scriptView = view.scripts[0]
     const blockView = scriptView.blocks[0]
-    
+
     expect(blockView.info.color).toBe("#ff0000")
   })
 
@@ -61,15 +65,15 @@ describe("Custom categories options", () => {
     const code = "my test block :: myCategory"
     const options = {
       categories: {
-        myCategory: {}
-      }
+        myCategory: {},
+      },
     }
     const doc = parse(code, options)
 
     const view = newView2(doc, options)
     const scriptView = view.scripts[0]
     const blockView = scriptView.blocks[0]
-    
+
     expect(blockView.info.category).toBe("extension")
   })
 })
