@@ -89,8 +89,8 @@ else
 end
 ```
 
-## Checkboxes
-Boolean inputs can now be rendered as clickable checkboxes. To create one, use a predicate with boolean text and append the `::shadow` override.
+## Shadow Inputs
+Empty boolean inputs can now be rendered as shadow inputs, like how they do in PenguinMod. To create one, use a predicate with boolean text and append the `::shadow` override.
 
 Example: `check it! <true::shadow>`
 ```blocks
