@@ -22,7 +22,7 @@ import {
 import * as scratch2 from "./scratch2/index.js"
 import * as scratch3 from "./scratch3/index.js"
 
-export default function (window) {
+function penguinblocks(window) {
   const document = window.document
 
   scratch2.init(window)
@@ -168,6 +168,24 @@ export default function (window) {
     addBlockDetection: addBlockDetection,
   }
 }
+
+Object.assign(penguinblocks, {
+  parse,
+  allLanguages,
+  loadLanguages,
+  Label,
+  Icon,
+  Input,
+  Block,
+  Comment,
+  Script,
+  Document,
+  addBlockDetection,
+})
+
+const scratchblocks = penguinblocks
+
+export { penguinblocks as default, penguinblocks, scratchblocks }
 
 // export funcs so node can use em
 export {

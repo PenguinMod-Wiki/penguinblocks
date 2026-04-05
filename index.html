@@ -12,169 +12,176 @@
 <link rel=stylesheet href="index.css">
 <script src="theme.js"></script>
 <style>
-.CodeMirror {
-  height: 100%;
-}
+  .CodeMirror {
+    height: 100%;
+  }
 </style>
 
 <style>
-#preview > svg {
-  display: block;
-  margin-bottom: 20px;
-  max-width: 100%;
-  height: auto;
-}
-#preview:before {
-  position: relative;
-  left: 1px;
-  min-width: 695px;
-  min-height: 842px;
-  z-index: 1;
-  transform: scale(0.66666);
-  transform-origin: 0 0;
-}
-@media screen and (max-width: 48em) {
-  #preview:before {
-    transform: scale(0.5);
-    min-width: 520px;
-    min-height: 630px;
+  #preview>svg {
+    display: block;
+    margin-bottom: 20px;
+    max-width: 100%;
+    height: auto;
   }
-}
-@media screen and (max-width: 32em) {
+
   #preview:before {
-    transform: scale(0.4);
-    min-width: 415px;
-    min-height: 505px;
+    position: relative;
+    left: 1px;
+    min-width: 695px;
+    min-height: 842px;
+    z-index: 1;
+    transform: scale(0.66666);
+    transform-origin: 0 0;
   }
-}
-.cmp #preview:before,
-.diff #preview:before {
-  position: absolute;
-  display: block;
-  content: "";
-  background: url(screenshot.png) no-repeat -2px -3px;
-}
-.cmp.diff #preview:before {
-  -webkit-filter: invert(100%) opacity(50%);
-}
-.diff #preview:before {
-  -webkit-filter: opacity(50%);
-}
-.cmp img {
-  display: none;
-}
 
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.5);
-  -webkit-backdrop-filter: blur(2px);
-}
+  @media screen and (max-width: 48em) {
+    #preview:before {
+      transform: scale(0.5);
+      min-width: 520px;
+      min-height: 630px;
+    }
+  }
 
-.modal-content {
-  background-color: var(--container-bg);
-  margin: 5% auto;
-  padding: 2rem;
-  border: 1px solid var(--container-border);
-  width: 90%;
-  max-width: 600px;
-  border-radius: 8px;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  color: var(--text-color);
-}
+  @media screen and (max-width: 32em) {
+    #preview:before {
+      transform: scale(0.4);
+      min-width: 415px;
+      min-height: 505px;
+    }
+  }
 
-.close-button {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.75rem;
-  font-weight: bold;
-  cursor: pointer;
-  color: var(--text-color);
-  line-height: 1;
-  user-select: none;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
+  .cmp #preview:before,
+  .diff #preview:before {
+    position: absolute;
+    display: block;
+    content: "";
+    background: url(screenshot.png) no-repeat -2px -3px;
+  }
 
-.close-button:hover {
-  background: var(--link-hover-bg);
-}
+  .cmp.diff #preview:before {
+    -webkit-filter: invert(100%) opacity(50%);
+  }
 
-.modal #custom-icons-section {
-  margin-top: 0;
-  padding-top: 0;
-  border-top: none;
-}
+  .diff #preview:before {
+    -webkit-filter: opacity(50%);
+  }
 
-@media screen and (max-width: 48em) {
+  .cmp img {
+    display: none;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
   .modal-content {
-    margin: 10% auto;
-    padding: 1.5rem;
-    width: 95%;
+    background-color: var(--container-bg);
+    margin: 5% auto;
+    padding: 2rem;
+    border: 1px solid var(--container-border);
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
   }
-}
 
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
+  .close-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--text-color);
+    line-height: 1;
+    user-select: none;
+    border-radius: 4px;
+    transition: background 0.2s;
+  }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: var(--container-bg);
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1000;
-  border: 1px solid var(--container-border);
-  border-radius: 4px;
-  top: 100%;
-  left: 0;
-  margin-top: 0;
-  padding-top: 0.25em;
-}
+  .close-button:hover {
+    background: var(--link-hover-bg);
+  }
 
-.dropdown-content a {
-  color: var(--text-color);
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  background: none;
-  border-bottom: 1px solid var(--container-border);
-}
+  .modal #custom-icons-section {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
 
-.dropdown-content a:last-child {
-  border-bottom: none;
-}
+  @media screen and (max-width: 48em) {
+    .modal-content {
+      margin: 10% auto;
+      padding: 1.5rem;
+      width: 95%;
+    }
+  }
 
-.dropdown-content a:hover {
-  background-color: var(--link-hover-bg);
-}
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
 
-.dropdown:hover .dropdown-content {
-  display: block;
-}
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: var(--container-bg);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    border: 1px solid var(--container-border);
+    border-radius: 4px;
+    top: 100%;
+    left: 0;
+    margin-top: 0;
+    padding-top: 0.25em;
+  }
 
-#tools-link {
-  background: var(--link-bg);
-}
+  .dropdown-content a {
+    color: var(--text-color);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    background: none;
+    border-bottom: 1px solid var(--container-border);
+  }
 
-#tools-link:hover {
-  background: var(--link-hover-bg);
-}
+  .dropdown-content a:last-child {
+    border-bottom: none;
+  }
+
+  .dropdown-content a:hover {
+    background-color: var(--link-hover-bg);
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  #tools-link {
+    background: var(--link-bg);
+  }
+
+  #tools-link:hover {
+    background: var(--link-hover-bg);
+  }
 </style>
 
 <!---------------------------------------------------------------------------->
@@ -196,21 +203,21 @@
 </h1>
 
 <div id="side">
-<div>
-  <select id="choose-lang">
-    <option value="">Select language…
-  </select>
+  <div>
+    <select id="choose-lang">
+      <option value="">Select language…
+    </select>
 
-  <small id=lang-status></small>
+    <small id=lang-status></small>
 
-  <select id="choose-style">
-    <option value="scratch3">3.0 (original)</option>
-    <option value="scratch3-high-contrast">3.0 (high-contrast)</option>
-    <option value="scratch2">2.0</option>
-  </select>
-</div>
+    <select id="choose-style">
+      <option value="scratch3">3.0 (original)</option>
+      <option value="scratch3-high-contrast">3.0 (high-contrast)</option>
+      <option value="scratch2">2.0</option>
+    </select>
+  </div>
 
-<textarea id="editor"></textarea>
+  <textarea id="editor"></textarea>
 </div>
 
 <pre id="preview" class="blocks"></pre>
@@ -227,8 +234,9 @@
         <div class="custom-icons-form-row">
           <input type="file" id="icon-file-upload" accept="image/*,.svg">
           <button id="add-icon-btn">
-            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor; vertical-align: middle; margin-right: 4px;">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+            <svg viewBox="0 0 24 24"
+              style="width: 18px; height: 18px; fill: currentColor; vertical-align: middle; margin-right: 4px;">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
             </svg>
             Add Icon
           </button>
@@ -246,389 +254,386 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
 
 <script>
-var customIcons = {};
-try {
-  var savedIcons = localStorage.getItem('penguinblocks-custom-icons');
-  if (savedIcons) {
-    customIcons = JSON.parse(savedIcons);
-  } else {
-    customIcons = {
-      "smiley": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOCIgZmlsbD0iI2ZmYmIxZSIvPjxjaXJjbGUgY3g9IjciIGN5PSI4IiByPSIxIi8+PGNpcmNsZSBjeD0iMTMiIGN5PSI4IiByPSIxIi8+PHBhdGggZD0iTTcgMTMgcTMgMiA2IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3N2Zz4="
-    };
-  }
-} catch (e) {}
-
-function updateIconsList() {
-  var list = document.getElementById('custom-icons-list');
-  list.innerHTML = "";
-  Object.keys(customIcons).forEach(function(name) {
-    var li = document.createElement('li');
-    li.className = "custom-icon-item";
-    
-    var preview = document.createElement('div');
-    preview.className = "custom-icon-preview";
-    
-    var data = customIcons[name];
-    if (data.trim().startsWith("<svg") || data.trim().startsWith("<g")) {
-      preview.innerHTML = data;
-      var svg = preview.querySelector('svg');
-      if (svg) {
-        svg.setAttribute('width', '24');
-        svg.setAttribute('height', '24');
-      }
+  var customIcons = {};
+  try {
+    var savedIcons = localStorage.getItem('penguinblocks-custom-icons');
+    if (savedIcons) {
+      customIcons = JSON.parse(savedIcons);
     } else {
-      var img = document.createElement('img');
-      img.src = data;
-      preview.appendChild(img);
+      customIcons = {
+        "smiley": "data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjAgMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAiIGN5PSIxMCIgcj0iOCIgZmlsbD0iI2ZmYmIxZSIvPjxjaXJjbGUgY3g9IjciIGN5PSI4IiByPSIxIi8+PGNpcmNsZSBjeD0iMTMiIGN5PSI4IiByPSIxIi8+PHBhdGggZD0iTTcgMTMgcTMgMiA2IDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48L3N2Zz4="
+      };
     }
-    
-    var nameSpan = document.createElement('span');
-    nameSpan.className = "custom-icon-name";
-    nameSpan.textContent = "@" + name;
-    
-    var delBtn = document.createElement('button');
-    delBtn.className = "delete-icon-btn";
-    delBtn.title = "Delete icon";
-    delBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
-    delBtn.onclick = function() {
-      delete customIcons[name];
+  } catch (e) { }
+
+  function updateIconsList() {
+    var list = document.getElementById('custom-icons-list');
+    list.innerHTML = "";
+    Object.keys(customIcons).forEach(function (name) {
+      var li = document.createElement('li');
+      li.className = "custom-icon-item";
+
+      var preview = document.createElement('div');
+      preview.className = "custom-icon-preview";
+
+      var data = customIcons[name];
+      if (data.trim().startsWith("<svg") || data.trim().startsWith("<g")) {
+        preview.innerHTML = data;
+        var svg = preview.querySelector('svg');
+        if (svg) {
+          svg.setAttribute('width', '24');
+          svg.setAttribute('height', '24');
+        }
+      } else {
+        var img = document.createElement('img');
+        img.src = data;
+        preview.appendChild(img);
+      }
+
+      var nameSpan = document.createElement('span');
+      nameSpan.className = "custom-icon-name";
+      nameSpan.textContent = "@" + name;
+
+      var delBtn = document.createElement('button');
+      delBtn.className = "delete-icon-btn";
+      delBtn.title = "Delete icon";
+      delBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>';
+      delBtn.onclick = function () {
+        delete customIcons[name];
+        localStorage.setItem('penguinblocks-custom-icons', JSON.stringify(customIcons));
+        updateIconsList();
+        objUpdated();
+      };
+
+      li.appendChild(preview);
+      li.appendChild(nameSpan);
+      li.appendChild(delBtn);
+      list.appendChild(li);
+    });
+  }
+
+  document.getElementById('add-icon-btn').addEventListener('click', function () {
+    var name = document.getElementById('new-icon-name').value.trim();
+    var data = document.getElementById('new-icon-data').value.trim();
+    if (name && data) {
+      customIcons[name] = data;
       localStorage.setItem('penguinblocks-custom-icons', JSON.stringify(customIcons));
       updateIconsList();
       objUpdated();
-    };
-    
-    li.appendChild(preview);
-    li.appendChild(nameSpan);
-    li.appendChild(delBtn);
-    list.appendChild(li);
-  });
-}
-
-document.getElementById('add-icon-btn').addEventListener('click', function() {
-  var name = document.getElementById('new-icon-name').value.trim();
-  var data = document.getElementById('new-icon-data').value.trim();
-  if (name && data) {
-    customIcons[name] = data;
-    localStorage.setItem('penguinblocks-custom-icons', JSON.stringify(customIcons));
-    updateIconsList();
-    objUpdated();
-    document.getElementById('new-icon-name').value = "";
-    document.getElementById('new-icon-data').value = "";
-  }
-});
-
-document.getElementById('icon-file-upload').addEventListener('change', function(e) {
-  var file = e.target.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    document.getElementById('new-icon-data').value = e.target.result;
-    if (!document.getElementById('new-icon-name').value) {
-      var name = file.name.split('.')[0].replace(/[^a-zA-Z0-9_-]/g, "");
-      document.getElementById('new-icon-name').value = name;
-    }
-  };
-  reader.readAsDataURL(file);
-});
-
-var keywordToCategory = {};
-var categoryNames = new Set([
-  "motion", "looks", "sound", "pen", "events", "control", "sensing", 
-  "operators", "variables", "list", "custom", "extension", "grey", "obsolete"
-]);
-
-function rebuildKeywordMap() {
-  keywordToCategory = {};
-  Object.keys(penguinblocks.allLanguages).forEach(langCode => {
-    var lang = penguinblocks.allLanguages[langCode];
-    if (!lang.blocksByHash) return;
-    for (var hash in lang.blocksByHash) {
-      var blocks = lang.blocksByHash[hash];
-      if (!blocks || blocks.length === 0) continue;
-      var category = blocks[0].category;
-      if (!category) continue;
-      categoryNames.add(category);
-      
-      var words = hash.split(/[ _%@()\[\]{}|]+/);
-      words.forEach(word => {
-        if (word.length > 1) {
-          var w = word.toLowerCase();
-          if (!keywordToCategory[w]) {
-            keywordToCategory[w] = category;
-          }
-        }
-      });
-    }
-    if (lang.definePrefix) {
-      lang.definePrefix.forEach(p => {
-        keywordToCategory[p.toLowerCase()] = "custom";
-      });
+      document.getElementById('new-icon-name').value = "";
+      document.getElementById('new-icon-data').value = "";
     }
   });
-}
 
-CodeMirror.defineMode("scratchblocks", function() {
-  rebuildKeywordMap();
-  return {
-    token: function(stream) {
-      if (stream.eatSpace()) return null;
-
-      if (stream.match("//")) {
-        stream.skipToEnd();
-        return "comment";
+  document.getElementById('icon-file-upload').addEventListener('change', function (e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById('new-icon-data').value = e.target.result;
+      if (!document.getElementById('new-icon-name').value) {
+        var name = file.name.split('.')[0].replace(/[^a-zA-Z0-9_-]/g, "");
+        document.getElementById('new-icon-name').value = name;
       }
+    };
+    reader.readAsDataURL(file);
+  });
 
-      if (stream.match(/^::/)) {
-        return "keyword";
-      }
+  var keywordToCategory = {};
+  var categoryNames = new Set([
+    "motion", "looks", "sound", "pen", "events", "control", "sensing",
+    "operators", "variables", "list", "custom", "extension", "grey", "obsolete"
+  ]);
 
-      if (stream.match(/^\[[^\]]*\]/)) return "string";
+  function rebuildKeywordMap() {
+    keywordToCategory = {};
+    Object.keys(penguinblocks.allLanguages).forEach(langCode => {
+      var lang = penguinblocks.allLanguages[langCode];
+      if (!lang.blocksByHash) return;
+      for (var hash in lang.blocksByHash) {
+        var blocks = lang.blocksByHash[hash];
+        if (!blocks || blocks.length === 0) continue;
+        var category = blocks[0].category;
+        if (!category) continue;
+        categoryNames.add(category);
 
-      if (stream.match(/^\([^\)]*\)/)) return "number";
-
-      if (stream.match(/^#(?:[0-9a-fA-F]{3}){1,2}/)) return "number";
-
-      if (stream.match(/^@[a-zA-Z0-9_-]+/)) return "variable-2";
-      if (stream.match(/^@\([^)]*\)/)) return "variable-2";
-
-      if (stream.match(/^{|}/)) return "bracket";
-
-      var m = stream.match(/^[a-zA-Z\u00C0-\u017F]+/);
-      if (m) {
-        var word = m[0].toLowerCase();
-
-        var line = stream.string.slice(stream.pos);
-        var overrideMatch = line.match(/::\s*([a-zA-Z0-9_-]+)/);
-        if (overrideMatch) {
-          var override = overrideMatch[1].toLowerCase();
-          if (categoryNames.has(override)) {
-            return "s-" + override;
+        var words = hash.split(/[ _%@()\[\]{}|]+/);
+        words.forEach(word => {
+          if (word.length > 1) {
+            var w = word.toLowerCase();
+            if (!keywordToCategory[w]) {
+              keywordToCategory[w] = category;
+            }
           }
-        }
-
-        if (categoryNames.has(word)) {
-          return "s-" + word;
-        }
-
-        if (keywordToCategory[word]) {
-          return "s-" + keywordToCategory[word];
-        }
-        return "variable";
+        });
       }
-
-      stream.next();
-      return null;
-    }
-  };
-});
-
-var obj = { script: "", lang: "" };
-extractHash();
-
-var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-  mode: "scratchblocks",
-  lineNumbers: true,
-  lineWrapping: true,
-  theme: "default"
-});
-
-var exportSVGLink;
-var exportPNGLink;
-
-editor.on('change', function() {
-  obj.script = editor.getValue();
-  objUpdated();
-});
-
-var chooseLang = document.getElementById('choose-lang');
-
-var languageCodes = Object.keys(penguinblocks.allLanguages)
-languageCodes.sort()
-languageCodes.forEach(function(code) {
-  if (code === "en") return
-  var option = document.createElement("option")
-  option.value = code
-
-  var language = penguinblocks.allLanguages[code]
-  option.textContent = language.name && language.altName ? `${language.name} — ${language.altName}` : language.name || language.altName || code
-  chooseLang.appendChild(option)
-})
-
-var incompleteLangs = [];
-var newOnlyLangs = [];
-[].slice.apply(chooseLang.options).forEach(function(el) {
-  var text = el.textContent;
-  if (/\*/.test(text)) incompleteLangs.push(el.value);
-  if (/\†/.test(text)) newOnlyLangs.push(el.value);
-});
-
-var langStatus = document.createTextNode("");
-document.getElementById('lang-status').appendChild(langStatus);
-
-chooseLang.addEventListener('change', function(e) {
-  obj.lang = chooseLang.value;
-  console.log(obj);
-  objUpdated();
-});
-
-var chooseStyle = document.getElementById('choose-style');
-chooseStyle.value = localStorage.getItem('penguinblocks-style') || 'scratch3';
-chooseStyle.addEventListener('change', function() {
-  localStorage.setItem('penguinblocks-style', chooseStyle.value);
-  objUpdated();
-});
-
-
-/* Extract hash from location. Returns true if changed */
-function extractHash() {
-  var newObj = decodeHash();
-  if (!newObj || !newObj.script) {
-    newObj = {
-      script: "",
-      lang: obj.lang,
-    };
-  }
-
-  if (newObj.lang !== obj.lang || newObj.script !== obj.script) {
-    obj = newObj;
-    return true;
-  }
-  return false;
-}
-
-function decodeHash() {
-  var hash = location.href.split('#')[1];
-  if (!hash) return;
-
-  if (!/^\?/.test(hash)) {
-    return {
-      script: decodeURIComponent(hash),
-    };
-  } else {
-    var newObj = {};
-    var parts = hash.slice(1).split('&');
-    parts.forEach(function(part) {
-      var match = /^(.*)=(.*)$/.exec(part);
-      if (!match) return;
-      var key = decodeURIComponent(match[1]);
-      var value = decodeURIComponent(match[2]);
-      if (key === "lang" || key === "script") {
-        newObj[key] = value;
+      if (lang.definePrefix) {
+        lang.definePrefix.forEach(p => {
+          keywordToCategory[p.toLowerCase()] = "custom";
+        });
       }
     });
-    return newObj;
   }
-}
 
-function download(filename, content) {
-  const elem = document.createElement("a");
-  elem.hidden = true;
-  elem.download = filename;
-  elem.href = content;
-  document.body.appendChild(elem);
-  elem.click();
-  document.body.removeChild(elem);
-}
+  CodeMirror.defineMode("scratchblocks", function () {
+    rebuildKeywordMap();
+    return {
+      token: function (stream) {
+        if (stream.eatSpace()) return null;
 
-function objUpdated() {
-  if (obj.lang) {
-    location.hash = ('#?lang=' + encodeURIComponent(obj.lang) +
-                     '&script='+encodeURIComponent(obj.script));
-  } else if (obj.script) {
-    location.hash = '#'+encodeURIComponent(obj.script);
-  } else {
-    if (!(location.hash == '' || location.hash == '#')) {
-      location.hash = '#';
+        if (stream.match("//")) {
+          stream.skipToEnd();
+          return "comment";
+        }
+
+        if (stream.match(/^::/)) {
+          return "keyword";
+        }
+
+        if (stream.match(/^\[[^\]]*\]/)) return "string";
+
+        if (stream.match(/^\([^\)]*\)/)) return "number";
+
+        if (stream.match(/^#(?:[0-9a-fA-F]{3}){1,2}/)) return "number";
+
+        if (stream.match(/^@[a-zA-Z0-9_-]+/)) return "variable-2";
+        if (stream.match(/^@\([^)]*\)/)) return "variable-2";
+
+        if (stream.match(/^{|}/)) return "bracket";
+
+        var m = stream.match(/^[a-zA-Z\u00C0-\u017F]+/);
+        if (m) {
+          var word = m[0].toLowerCase();
+
+          var line = stream.string.slice(stream.pos);
+          var overrideMatch = line.match(/::\s*([a-zA-Z0-9_-]+)/);
+          if (overrideMatch) {
+            var override = overrideMatch[1].toLowerCase();
+            if (categoryNames.has(override)) {
+              return "s-" + override;
+            }
+          }
+
+          if (categoryNames.has(word)) {
+            return "s-" + word;
+          }
+
+          if (keywordToCategory[word]) {
+            return "s-" + keywordToCategory[word];
+          }
+          return "variable";
+        }
+
+        stream.next();
+        return null;
+      }
+    };
+  });
+
+  var obj = { script: "", lang: "" };
+  extractHash();
+
+  var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+    mode: "scratchblocks",
+    lineNumbers: true,
+    lineWrapping: true,
+    theme: "default"
+  });
+
+  var exportSVGLink;
+  var exportPNGLink;
+
+  editor.on('change', function () {
+    obj.script = editor.getValue();
+    objUpdated();
+  });
+
+  var chooseLang = document.getElementById('choose-lang');
+
+  var languageCodes = Object.keys(penguinblocks.allLanguages)
+  languageCodes.sort()
+  languageCodes.forEach(function (code) {
+    if (code === "en") return
+    var option = document.createElement("option")
+    option.value = code
+
+    var language = penguinblocks.allLanguages[code]
+    option.textContent = language.name && language.altName ? `${language.name} — ${language.altName}` : language.name || language.altName || code
+    chooseLang.appendChild(option)
+  })
+
+  var incompleteLangs = [];
+  var newOnlyLangs = [];
+  [].slice.apply(chooseLang.options).forEach(function (el) {
+    var text = el.textContent;
+    if (/\*/.test(text)) incompleteLangs.push(el.value);
+    if (/\†/.test(text)) newOnlyLangs.push(el.value);
+  });
+
+  var langStatus = document.createTextNode("");
+  document.getElementById('lang-status').appendChild(langStatus);
+
+  chooseLang.addEventListener('change', function (e) {
+    obj.lang = chooseLang.value;
+    console.log(obj);
+    objUpdated();
+  });
+
+  var chooseStyle = document.getElementById('choose-style');
+  chooseStyle.value = localStorage.getItem('penguinblocks-style') || 'scratch3';
+  chooseStyle.addEventListener('change', function () {
+    localStorage.setItem('penguinblocks-style', chooseStyle.value);
+    objUpdated();
+  });
+
+
+  function extractHash() {
+    var newObj = decodeHash();
+    if (!newObj || !newObj.script) {
+      newObj = {
+        script: "",
+        lang: obj.lang,
+      };
+    }
+
+    if (newObj.lang !== obj.lang || newObj.script !== obj.script) {
+      obj = newObj;
+      return true;
+    }
+    return false;
+  }
+
+  function decodeHash() {
+    var hash = location.href.split('#')[1];
+    if (!hash) return;
+
+    if (!/^\?/.test(hash)) {
+      return {
+        script: decodeURIComponent(hash),
+      };
+    } else {
+      var newObj = {};
+      var parts = hash.slice(1).split('&');
+      parts.forEach(function (part) {
+        var match = /^(.*)=(.*)$/.exec(part);
+        if (!match) return;
+        var key = decodeURIComponent(match[1]);
+        var value = decodeURIComponent(match[2]);
+        if (key === "lang" || key === "script") {
+          newObj[key] = value;
+        }
+      });
+      return newObj;
     }
   }
 
-  var doc = window.doc = penguinblocks.parse(obj.script, {
-    languages: obj.lang ? ['en', obj.lang] : ['en'],
-    icons: customIcons,
-  });
-
-  var selectedStyle = chooseStyle.value;
-  var docView = penguinblocks.newView(doc, {
-    style: selectedStyle,
-    scale: selectedStyle === "scratch2" ? 1 : 0.675,
-    icons: customIcons,
-  });
-  
-  var svg = docView.render();
-  preview.innerHTML = "";
-  preview.appendChild(svg);
-  
-  if (/^scratch3($|-)/.test(selectedStyle)) {
-     svg.classList.add("scratch3");
+  function download(filename, content) {
+    const elem = document.createElement("a");
+    elem.hidden = true;
+    elem.download = filename;
+    elem.href = content;
+    document.body.appendChild(elem);
+    elem.click();
+    document.body.removeChild(elem);
   }
-  svg.classList.add("penguinblocks-style-" + selectedStyle);
 
-  setTimeout(function() {
-    if (!exportSVGLink) exportSVGLink = document.createElement('a');
-    exportSVGLink.onclick = () => download("penguinblocks.svg", docView.exportSVG());
-    exportSVGLink.textContent = "Export SVG";
-    exportSVGLink.className = 'export-link';
-    if (!exportSVGLink.isConnected) document.body.appendChild(exportSVGLink);
+  function objUpdated() {
+    if (obj.lang) {
+      location.hash = ('#?lang=' + encodeURIComponent(obj.lang) +
+        '&script=' + encodeURIComponent(obj.script));
+    } else if (obj.script) {
+      location.hash = '#' + encodeURIComponent(obj.script);
+    } else {
+      if (!(location.hash == '' || location.hash == '#')) {
+        location.hash = '#';
+      }
+    }
 
-    if (!exportPNGLink) exportPNGLink = document.createElement('a');
-    exportPNGLink.onclick = () => docView.exportPNG((url) => download("penguinblocks.png", url));
-    exportPNGLink.textContent = "Export PNG";
-    exportPNGLink.className = 'export-link';
-    if (!exportPNGLink.isConnected) document.body.appendChild(exportPNGLink);
-  }, 0);
+    var doc = window.doc = penguinblocks.parse(obj.script, {
+      languages: obj.lang ? ['en', obj.lang] : ['en'],
+      icons: customIcons,
+    });
 
-  var lang = penguinblocks.allLanguages[obj.lang]
-  langStatus.textContent = lang ? `${lang.percentTranslated}%` : "";
-}
+    var selectedStyle = chooseStyle.value;
+    var docView = penguinblocks.newView(doc, {
+      style: selectedStyle,
+      scale: selectedStyle === "scratch2" ? 1 : 0.675,
+      icons: customIcons,
+    });
 
-setInterval(function() {
-  if (extractHash()) {
-    updatedFromHash();
+    var svg = docView.render();
+    preview.innerHTML = "";
+    preview.appendChild(svg);
+
+    if (/^scratch3($|-)/.test(selectedStyle)) {
+      svg.classList.add("scratch3");
+    }
+    svg.classList.add("penguinblocks-style-" + selectedStyle);
+
+    setTimeout(function () {
+      if (!exportSVGLink) exportSVGLink = document.createElement('a');
+      exportSVGLink.onclick = () => download("penguinblocks.svg", docView.exportSVG());
+      exportSVGLink.textContent = "Export SVG";
+      exportSVGLink.className = 'export-link';
+      if (!exportSVGLink.isConnected) document.body.appendChild(exportSVGLink);
+
+      if (!exportPNGLink) exportPNGLink = document.createElement('a');
+      exportPNGLink.onclick = () => docView.exportPNG((url) => download("penguinblocks.png", url));
+      exportPNGLink.textContent = "Export PNG";
+      exportPNGLink.className = 'export-link';
+      if (!exportPNGLink.isConnected) document.body.appendChild(exportPNGLink);
+    }, 0);
+
+    var lang = penguinblocks.allLanguages[obj.lang]
+    langStatus.textContent = lang ? `${lang.percentTranslated}%` : "";
   }
-}, 200);
 
-function updatedFromHash() {
-  var cursor = editor.getCursor();
-  var scrollInfo = editor.getScrollInfo();
-  editor.setValue(obj.script);
-  editor.setCursor(cursor);
-  editor.scrollTo(scrollInfo.left, scrollInfo.top);
-  objUpdated();
-  chooseLang.value = obj.lang || "";
-}
+  setInterval(function () {
+    if (extractHash()) {
+      updatedFromHash();
+    }
+  }, 200);
 
-updatedFromHash();
-updateIconsList();
+  function updatedFromHash() {
+    var cursor = editor.getCursor();
+    var scrollInfo = editor.getScrollInfo();
+    editor.setValue(obj.script);
+    editor.setCursor(cursor);
+    editor.scrollTo(scrollInfo.left, scrollInfo.top);
+    objUpdated();
+    chooseLang.value = obj.lang || "";
+  }
 
-var modal = document.getElementById("settings-modal");
-var btn = document.getElementById("open-settings");
-var span = document.getElementsByClassName("close-button")[0];
+  updatedFromHash();
+  updateIconsList();
 
-btn.onclick = function(e) {
-  e.preventDefault();
-  modal.style.display = "block";
-}
+  var modal = document.getElementById("settings-modal");
+  var btn = document.getElementById("open-settings");
+  var span = document.getElementsByClassName("close-button")[0];
 
-span.onclick = function() {
-  modal.style.display = "none";
-}
+  btn.onclick = function (e) {
+    e.preventDefault();
+    modal.style.display = "block";
+  }
 
-window.onclick = function(event) {
-  if (event.target == modal) {
+  span.onclick = function () {
     modal.style.display = "none";
   }
-}
+
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  }
 
 </script>
 
 <script>
-function showDiff(e) {
-  document.body.classList[e.ctrlKey ? 'add' : 'remove']('cmp');
-  document.body.classList[e.altKey  ? 'add' : 'remove']('diff');
-}
-document.addEventListener('keydown', showDiff);
-document.addEventListener('keyup', showDiff);
+  function showDiff(e) {
+    document.body.classList[e.ctrlKey ? 'add' : 'remove']('cmp');
+    document.body.classList[e.altKey ? 'add' : 'remove']('diff');
+  }
+  document.addEventListener('keydown', showDiff);
+  document.addEventListener('keyup', showDiff);
 
 </script>
-
-

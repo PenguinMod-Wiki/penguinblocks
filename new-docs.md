@@ -25,9 +25,12 @@ inline block {
 ## Opcode and Argument Injection
 You can manually specify internal metadata for blocks, such as opcodes and argument names. One possible use case for this is when creating automated tools that scrape data from the PenguinMod wiki.
 
-Example: `block with @argumentname(yes)() at @argumentname(x)() @argumentname(y)()::@opcode(ext_block)`
+Example:
+```
+block with @argumentname(yes)() at @argumentname(x)()::@opcode(ext_block)
+```
 ```blocks
-block with @argumentname(yes)() at @argumentname(x)() @argumentname(y)()::@opcode(ext_block)
+block with @argumentname(yes)() at @argumentname(x)()::@opcode(ext_block)
 ```
 It looks the same when rendered, but the internal SVG metadata is used to identify the block and its arguments. Try using inspect element on this block to see the difference!
 
@@ -63,5 +66,172 @@ say (hello [Gen1x])
 
 The example above defines a reporter custom block with a blue background. When the block is called later, it maintains that specific styling.
 
+## `else if` Support
+Conditional blocks now support multiple `else if` branches, letting you create cleaner multi-path logic.
+
+Example:
+```
+if <key [space v] pressed?> then
+    say [Space!]
+else if <mouse down?> then
+    say [Click!]
+else
+    say [Nothing...]
+end
+```
+```blocks
+if <key [space v] pressed?> then
+    say [Space!]
+else if <mouse down?> then
+    say [Click!]
+else
+    say [Nothing...]
+end
+```
+
+## Checkboxes
+Boolean inputs can now be rendered as clickable checkboxes. To create one, use a predicate with boolean text and append the `::shadow` override.
+
+Example: `check it! <true::shadow>`
+```blocks
+check it! <true::shadow>
+check it! <false::shadow>
+```
+
+## New Block Shapes
+We've added several new shapes for both blocks and inputs to support a wider range of visual styles. Available shapes include: `octagonal`, `square`, `leaf`, `plus`, `ticket`, `bumped`, `indented`, `scrapped`, and `arrow`.
+
+Example: `ticket shape block::ticket`
+```blocks
+ticket shape block::ticket
+square input [text]::square
+```
+
+## Automatic Cap Blocks
+Any block that starts with the word "return" (case-insensitive) will automatically be rendered as a cap block, just like in PenguinMod!
+
+Example:
+```
+define hi!
+return [value]
+```
+```blocks
+return [value]
+```
+
 # JavaScript API
-TODO, sorry :P
+This section will be updated often as new APIs are added.
+
+## Compatibility Alias (`scratchblocks`)
+`penguinblocks` is designed to be a drop-in replacement for `scratchblocks`. To facilitate this, it provides a universal `scratchblocks` alias that works across all environments.
+
+### Browser Environment
+When used in a browser, the library automatically registers itself to both `window.penguinblocks` and `window.scratchblocks`.
+
+```javascript
+// both of these are equivalent
+penguinblocks.renderMatching();
+scratchblocks.renderMatching();
+```
+
+### Modern JavaScript Environments
+For projects using ES modules (like Node.js or bundlers like Webpack and Rollup), you can import the library using either name. We recommend using `penguinblocks` to avoid confusion.
+
+```javascript
+// using penguinblocks
+import penguinblocks from 'penguinblocks';
+
+// using the scratchblocks alias
+import scratchblocks from 'penguinblocks';
+
+// or as a named export
+import { scratchblocks } from 'penguinblocks';
+```
+
+## Block Detection (Macros)
+The Block Detection API allows you to define "macros" that automatically expand short-form syntax into long-form block code. This is particularly useful for building domain-specific languages on top of the standard syntax.
+
+### `addBlockDetection(short, long)`
+Registers a new macro transformation.
+
+```javascript
+penguinblocks.addBlockDetection(
+  "array builder (current)", 
+  "array builder (current::square arrays) {}::arrays square"
+);
+```
+
+To enable macro expansion during parsing, set the `detect_blocks` option to `true`:
+
+```javascript
+const doc = penguinblocks.parse(code, { detect_blocks: true });
+```
+
+## Custom Icons
+You can register custom icons to be used throughout your blocks via the `icons` option in the rendering functions. These icons can be images (via URL or Data URI) or raw SVG strings.
+
+### Usage
+To register icons, provide an `icons` object in the options for `renderMatching`, `render`, or `newView`.
+
+```javascript
+penguinblocks.renderMatching('pre.blocks', {
+  style: 'scratch3',
+  icons: {
+    // registrate with an URL
+    'my-icon': 'https://example.com/icon.png',
+
+    // registrate with a base64 data URI
+    'data-icon': 'data:image/svg+xml;base64,...',
+
+    // registrate with an SVG string and custom dimensions
+    'svg-icon': {
+      data: '<svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="red" /></svg>',
+      width: 40,
+      height: 40
+    }
+  }
+});
+```
+
+Once registered, you can use these icons in your block syntax using the icon literal:
+
+```
+@(my-icon) This block uses a custom icon!
+```
+
+If an icon is provided as a raw SVG string (starting with `<svg` or `<g`), it will be embedded directly into the generated SVG. Otherwise, it will be treated as an image source.
+
+## Custom Block Shapes
+You can register custom block shapes to be used throughout your blocks via the `shapes` option in the rendering functions. These shapes can be functions that return an SVG path, or objects containing a path string (with `{w}` and `{h}` placeholders) or a path function.
+
+### Usage
+To register custom shapes, provide a `shapes` object in the options for `renderMatching`, `render`, or `newView`.
+
+```javascript
+penguinblocks.renderMatching('pre.blocks', {
+  style: 'scratch3',
+  shapes: {
+    'my-custom-shape': {
+      // height of the block
+      height: 32,
+      // padding for the block (top, bottom, left, right)
+      padding: {
+          top: 4,
+          bottom: 4,
+          left: 4,
+          right: 4
+      },
+      // the path of the block shape
+      path: 'm 0,0 m 20,0 H {w}-20 h 20 a 2 2 0 0 1 2 2 v {h}-4.7 a 2 2 0 0 1 -2 2 h -20 H 20 l -20 0 a 2 2 0 0 1 -2 -2 v -{h}+4.7 a 2 2 0 0 1 2 -2 h 20 z'
+    }
+  }
+});
+```
+
+Once registered, you can use these shapes in your block syntax using the shape override:
+
+```
+my custom shape block::my-custom-shape
+```
+
+For more info on how PenguinMod uses custom block shapes in extensions, see the <a href="https://docs.penguinmod.com/development/extensions/api/blocks/custom-block-shape/" target="_blank">PenguinMod Custom Block Shape API</a>.
