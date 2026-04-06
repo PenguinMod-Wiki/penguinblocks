@@ -1,7 +1,6 @@
 import { parse } from "../syntax/index.js"
 import { newView } from "../scratch3/index.js"
 
-
 describe("Custom categories options", () => {
   it("are handled correctly in Scratch 3", () => {
     const code = "my test block :: myCategory"
