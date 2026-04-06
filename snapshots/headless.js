@@ -26,6 +26,7 @@ class Renderer {
       this.server = app.listen(8002, resolve)
     })
     this.browser = await puppeteer.launch({
+      args: ["--no-sandbox"],
       //headless: false,
       //slowMo: 250,
     })

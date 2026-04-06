@@ -220,7 +220,6 @@
     <select id="choose-style">
       <option value="scratch3">3.0 (original)</option>
       <option value="scratch3-high-contrast">3.0 (high-contrast)</option>
-      <option value="scratch2">2.0</option>
     </select>
   </div>
 
@@ -564,7 +563,7 @@
     var selectedStyle = chooseStyle.value;
     var docView = penguinblocks.newView(doc, {
       style: selectedStyle,
-      scale: selectedStyle === "scratch2" ? 1 : 0.675,
+      scale: 0.675,
       icons: customIcons,
     });
 

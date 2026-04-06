@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>new docs - penguinblocks dev</title>
     <meta name="description" content="Use penguinblocks to turn text into a visual Scratch script!">
-    
+
     <meta property="og:title" content="penguinblocks dev">
     <meta property="og:description" content="Use penguinblocks to turn text into a visual Scratch script!">
     <meta property="og:type" content="website">
@@ -19,6 +20,7 @@
         html {
             scroll-behavior: smooth;
         }
+
         body {
             background: var(--bg-color);
             display: flex;
@@ -26,6 +28,7 @@
             align-items: center;
             color: var(--text-color);
         }
+
         .container {
             background: var(--container-bg);
             padding: 2em;
@@ -35,6 +38,7 @@
             min-width: 0;
             margin-bottom: 2em;
         }
+
         .toc {
             position: sticky;
             top: 1em;
@@ -46,6 +50,7 @@
             overflow-y: auto;
             margin-top: 1em;
         }
+
         .toc h3 {
             margin-top: 0;
             margin-bottom: 1em;
@@ -53,14 +58,17 @@
             border-bottom: 1px solid var(--container-border);
             padding-bottom: 0.5em;
         }
+
         .toc ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
+
         .toc li {
             margin-bottom: 0.5em;
         }
+
         .toc a {
             background: none;
             display: block;
@@ -68,21 +76,25 @@
             color: var(--text-color);
             transition: color 0.2s;
         }
+
         .toc a:hover {
             color: var(--text-color);
             background: var(--toc-hover-bg);
             border-bottom: none;
         }
+
         .example {
             margin: 2em 0;
             padding: 1em;
             border: 1px solid var(--container-border);
             background: var(--container-bg);
         }
+
         .blocks {
             display: block;
             margin-top: 1em;
         }
+
         code {
             background: var(--button-bg);
             padding: 0.2em 0.4em;
@@ -178,10 +190,12 @@
             align-items: flex-start;
             padding: 0 1em;
         }
+
         h1 {
             border-bottom: 1px solid var(--container-border);
             padding-bottom: 0.3em;
         }
+
         h2 {
             margin-top: 1.5em;
             border-bottom: 1px solid var(--container-border);
@@ -189,11 +203,13 @@
             font-weight: normal;
             font-size: 1.3em;
         }
+
         header {
             width: 100%;
             max-width: 80em;
             padding: 0 1em;
         }
+
         #title {
             background: none;
         }
@@ -203,6 +219,7 @@
                 flex-direction: column-reverse;
                 align-items: stretch;
             }
+
             .toc {
                 position: static;
                 width: 100%;
@@ -273,142 +290,144 @@
         }
     </style>
 </head>
+
 <body>
 
-<header>
-    <h1>
-      penguinblocks dev
-      <span>
-        <a href="index.html"><b>back to editor</b></a>
-      </span>
-    </h1>
-</header>
+    <header>
+        <h1>
+            penguinblocks dev
+            <span>
+                <a href="index.html"><b>back to editor</b></a>
+            </span>
+        </h1>
+    </header>
 
-<div class="main-content">
-    <div id="content" class="container">
-        Loading...
+    <div class="main-content">
+        <div id="content" class="container">
+            Loading...
+        </div>
+        <nav class="toc">
+            <h3>Contents</h3>
+            <ul id="toc-list"></ul>
+        </nav>
     </div>
-    <nav class="toc">
-        <h3>Contents</h3>
-        <ul id="toc-list"></ul>
-    </nav>
-</div>
 
-<script src="build/penguinblocks.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-<script>
-    const CLIPBOARD_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>`;
-    const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+    <script src="build/penguinblocks.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script>
+        const CLIPBOARD_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>`;
+        const CHECK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
 
-    window.copyCode = function(button) {
-        const container = button.closest('.code-container');
-        const code = container.querySelector('pre code').textContent;
-        navigator.clipboard.writeText(code).then(() => {
-            button.innerHTML = CHECK_SVG;
-            button.style.color = '#33D833';
-            setTimeout(() => {
-                button.innerHTML = CLIPBOARD_SVG;
-                button.style.color = '';
-            }, 2000);
-        });
-    };
+        window.copyCode = function (button) {
+            const container = button.closest('.code-container');
+            const code = container.querySelector('pre code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                button.innerHTML = CHECK_SVG;
+                button.style.color = '#33D833';
+                setTimeout(() => {
+                    button.innerHTML = CLIPBOARD_SVG;
+                    button.style.color = '';
+                }, 2000);
+            });
+        };
 
-    async function loadContent() {
-        try {
-            const response = await fetch('new-docs.md');
-            const markdown = await response.text();
+        async function loadContent() {
+            try {
+                const response = await fetch('new-docs.md');
+                const markdown = await response.text();
 
-            function escapeHTML(text) {
-                return text
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;')
-                    .replace(/'/g, '&#39;');
-            }
+                function escapeHTML(text) {
+                    return text
+                        .replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                }
 
-            marked.use({
-                tokenizer: {
-                    codespan(src) {
-                        const match = src.match(/^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/);
-                        if (match) {
-                            return {
-                                type: 'codespan',
-                                raw: match[0],
-                                text: match[2]
-                            };
+                marked.use({
+                    tokenizer: {
+                        codespan(src) {
+                            const match = src.match(/^(`+)([^`]|[^`][\s\S]*?[^`])\1(?!`)/);
+                            if (match) {
+                                return {
+                                    type: 'codespan',
+                                    raw: match[0],
+                                    text: match[2]
+                                };
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                },
-                renderer: {
-                    code(token) {
-                        const { text, lang } = token;
-                        const escapedText = escapeHTML(text);
-                        if (lang === 'blocks') {
-                            return `
+                    },
+                    renderer: {
+                        code(token) {
+                            const { text, lang } = token;
+                            const escapedText = escapeHTML(text);
+                            if (lang === 'blocks') {
+                                return `
                                 <div class="code-container example">
                                     <pre class="blocks">${escapedText}</pre>
                                 </div>`;
-                        }
-                        return `
+                            }
+                            return `
                             <div class="code-container">
                                 <button class="copy-button" title="Copy code" onclick="copyCode(this)">${CLIPBOARD_SVG}</button>
                                 <pre><code class="language-${lang || 'none'}">${escapedText}</code></pre>
                             </div>`;
-                    },
-                    codespan(token) {
-                        return `<code>${escapeHTML(token.text)}</code>`;
+                        },
+                        codespan(token) {
+                            return `<code>${escapeHTML(token.text)}</code>`;
+                        }
                     }
-                }
-            });
-
-            const html = marked.parse(markdown);
-            const contentDiv = document.getElementById('content');
-            contentDiv.innerHTML = html;
-
-            const tocList = document.getElementById('toc-list');
-            const headers = contentDiv.querySelectorAll('h1, h2, h3');
-            headers.forEach((header, index) => {
-                const id = header.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-                header.id = id;
-                
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = `#${id}`;
-                a.textContent = header.textContent;
-                if (header.tagName === 'H1') {
-                    a.style.fontWeight = 'bold';
-                }
-                if (header.tagName === 'H2') {
-                    li.style.marginLeft = '1.5em';
-                } else if (header.tagName === 'H3') {
-                    li.style.marginLeft = '3em';
-                }
-                li.appendChild(a);
-                tocList.appendChild(li);
-            });
-
-            if (window.penguinblocks) {
-                penguinblocks.renderMatching('pre.blocks', {
-                    style: 'scratch3',
-                    languages: ['en']
                 });
-            }
 
-            if (window.Prism) {
-                Prism.highlightAll();
+                const html = marked.parse(markdown);
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = html;
+
+                const tocList = document.getElementById('toc-list');
+                const headers = contentDiv.querySelectorAll('h1, h2, h3');
+                headers.forEach((header, index) => {
+                    const id = header.textContent.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+                    header.id = id;
+
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = `#${id}`;
+                    a.textContent = header.textContent;
+                    if (header.tagName === 'H1') {
+                        a.style.fontWeight = 'bold';
+                    }
+                    if (header.tagName === 'H2') {
+                        li.style.marginLeft = '1.5em';
+                    } else if (header.tagName === 'H3') {
+                        li.style.marginLeft = '3em';
+                    }
+                    li.appendChild(a);
+                    tocList.appendChild(li);
+                });
+
+                if (window.penguinblocks) {
+                    penguinblocks.renderMatching('pre.blocks', {
+                        style: 'scratch3',
+                        languages: ['en']
+                    });
+                }
+
+                if (window.Prism) {
+                    Prism.highlightAll();
+                }
+            } catch (e) {
+                console.error(e);
+                document.getElementById('content').textContent = 'Error loading content.';
             }
-        } catch (e) {
-            console.error(e);
-            document.getElementById('content').textContent = 'Error loading content.';
         }
-    }
 
-    loadContent();
-</script>
+        loadContent();
+    </script>
 
 </body>
+
 </html>
