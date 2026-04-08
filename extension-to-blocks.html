@@ -864,15 +864,20 @@ async function generateBlocks(extension) {
 
   window._extMenus = info.menus || {};
 
-  const color1 = info.color1 ? info.color1.replace(/^(?!#)/, '#') : 'extension';
+  const color1 = info.color1 ? info.color1.replace(/^(?!#)/, "#") : "extension";
+  const blockIconURI = info.blockIconURI;
 
   const lines = [];
   const total = blocks.length;
 
   for (let i = 0; i < total; i++) {
     const block = blocks[i];
-    if (typeof block === 'object' && block !== null && BLOCK_TYPES.has(block.blockType)) {
-      const line = convertBlock(block, color1);
+    if (
+      typeof block === "object" &&
+      block !== null &&
+      BLOCK_TYPES.has(block.blockType)
+    ) {
+      const line = convertBlock(block, color1, blockIconURI);
       if (line) lines.push(line);
     }
     
@@ -914,14 +919,20 @@ const BLOCK_SHAPE_KEYWORDS = {
   ticket:    'ticket',
 };
 
-function convertBlock(block, color) {
-  const rawText = block.text || block.opcode || '';
-  const args    = block.arguments || {};
+function convertBlock(block, color, iconURI) {
+  const rawText = block.text || block.opcode || "";
+  const args = block.arguments || {};
 
-  const filledText = fillArgs(rawText, args);
+  let filledText = fillArgs(rawText, args);
+
+  const blockIconURI = block.blockIconURI || iconURI;
+
+  if (blockIconURI) {
+    filledText = `@(${blockIconURI}) ${filledText}`;
+  }
 
   const shapeKeyword = block.blockShape
-    ? (BLOCK_SHAPE_KEYWORDS[block.blockShape] ?? block.blockShape)
+    ? BLOCK_SHAPE_KEYWORDS[block.blockShape] ?? block.blockShape
     : null;
 
   const annotation = shapeKeyword
