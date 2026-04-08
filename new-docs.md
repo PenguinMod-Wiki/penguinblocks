@@ -52,6 +52,8 @@ Example: `@(data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwLDAsNjku...) Custom Ic
 go to [nose v] // vanilla icon
 ```
 
+**Tip**: If you're using the site, you can check the Settings menu to register any icon and summon it without having to enter the URI every time!
+
 ## Custom Block Shapes and Colors
 Custom block definitions can now be given a reporter or boolean shape. You can also provide a hex color directly in the definition, and any blocks that call it will automatically inherit that color.
 
