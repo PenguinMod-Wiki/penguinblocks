@@ -77,7 +77,8 @@
   },
   "jest": {
     "transform": {},
-    "testMatch": ["**/tests/**/*.js"]
+    "testMatch": ["**/tests/**/*.js"],
+    "setupFilesAfterEnv": ["<rootDir>/jest-setup.js"]
   },
   "dependencies": {
     "install": "^0.13.0"
