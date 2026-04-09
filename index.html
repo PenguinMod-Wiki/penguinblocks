@@ -253,6 +253,7 @@
   </div>
 </div>
 
+
 <!---------------------------------------------------------------------------->
 
 <script src="build/penguinblocks.min.js"></script>
@@ -492,6 +493,79 @@
     objUpdated();
   });
 
+  var zoomScale = parseFloat(localStorage.getItem('penguinblocks-zoom')) || 0.675;
+  var zoomControls;
+  var zoomLabel;
+  
+  function createZoomControls() {
+    if (!zoomControls) {
+      zoomControls = document.createElement('span');
+      zoomControls.className = 'zoom-controls';
+      zoomControls.style.display = 'none';
+      
+      var zoomOutBtn = document.createElement('button');
+      zoomOutBtn.id = 'zoom-out';
+      zoomOutBtn.title = 'Zoom out';
+      zoomOutBtn.textContent = '−';
+      
+      zoomLabel = document.createElement('span');
+      zoomLabel.id = 'zoom-label';
+      zoomLabel.textContent = '67%';
+      
+      var zoomInBtn = document.createElement('button');
+      zoomInBtn.id = 'zoom-in';
+      zoomInBtn.title = 'Zoom in';
+      zoomInBtn.textContent = '+';
+      
+      var zoomHint = document.createElement('span');
+      zoomHint.className = 'zoom-hint';
+      zoomHint.textContent = '(you can also use the scroll wheel)';
+      zoomHint.style.fontSize = '0.8em';
+      zoomHint.style.marginLeft = '1.5em';
+      zoomHint.style.color = 'var(--cm-comment)';
+      
+      zoomControls.appendChild(zoomOutBtn);
+      zoomControls.appendChild(zoomLabel);
+      zoomControls.appendChild(zoomInBtn);
+      zoomControls.appendChild(zoomHint);
+      
+      document.body.appendChild(zoomControls);
+    }
+  }
+  
+  createZoomControls();
+  
+  function updateZoomLabel() {
+    zoomLabel.textContent = Math.round(zoomScale * 100) + '%';
+  }
+  updateZoomLabel();
+
+  document.getElementById('zoom-in').addEventListener('click', function () {
+    zoomScale = Math.min(zoomScale + 0.1, 5);
+    localStorage.setItem('penguinblocks-zoom', zoomScale.toString());
+    updateZoomLabel();
+    objUpdated();
+  });
+
+  document.getElementById('zoom-out').addEventListener('click', function () {
+    zoomScale = Math.max(zoomScale - 0.1, 0.1);
+    localStorage.setItem('penguinblocks-zoom', zoomScale.toString());
+    updateZoomLabel();
+    objUpdated();
+  });
+
+  document.getElementById('preview').addEventListener('wheel', function (e) {
+    if (e.deltaY < 0) {
+      zoomScale = Math.min(zoomScale + 0.05, 5);
+    } else {
+      zoomScale = Math.max(zoomScale - 0.05, 0.1);
+    }
+    localStorage.setItem('penguinblocks-zoom', zoomScale.toString());
+    updateZoomLabel();
+    objUpdated();
+    e.preventDefault();
+  }, { passive: false });
+
 
   function extractHash() {
     var newObj = decodeHash();
@@ -563,7 +637,7 @@
     var selectedStyle = chooseStyle.value;
     var docView = penguinblocks.newView(doc, {
       style: selectedStyle,
-      scale: 0.675,
+      scale: zoomScale,
       icons: customIcons,
     });
 
@@ -588,6 +662,9 @@
       exportPNGLink.textContent = "Export PNG";
       exportPNGLink.className = 'export-link';
       if (!exportPNGLink.isConnected) document.body.appendChild(exportPNGLink);
+
+      zoomControls.style.display = 'inline-block';
+      exportPNGLink.parentNode.insertBefore(zoomControls, exportPNGLink.nextSibling);
     }, 0);
 
     var lang = penguinblocks.allLanguages[obj.lang]
@@ -644,4 +721,5 @@
 
 </script>
 </body>
+
 </html>
