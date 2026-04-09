@@ -126,7 +126,7 @@ square input [text]::square
 
 ## New PM Block Detection
 This fork will also add several blocks from PenguinMod that will be detected automatically.
-As an example, any block that starts with the word "return" (case-insensitive) will now be automatically be rendered as a cap block, just like the one in PenguinMod!
+As an example, any block that starts with the word "return" (case-insensitive) will now be automatically rendered as a cap block, just like the one in PenguinMod!
 
 Example:
 ```
